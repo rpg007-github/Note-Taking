@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Note-Taking and Active Reading | Foundations: Closing the Gap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --accent: #2E7D6F;
+  --accent-light: #E0F2EE;
+  --accent-dark: #1B5E50;
+  --bg: #FAFAF7;
+  --card-bg: #FFFFFF;
+  --text: #2C2C2C;
+  --text-muted: #6B6B6B;
+  --border: #E8E5DE;
+  --warm: #F5F0E8;
+  --highlight: #FFF8E7;
+  --code-bg: #F4F1EB;
+  --serif: 'Crimson Pro', Georgia, serif;
+  --sans: 'Source Sans 3', 'Segoe UI', sans-serif;
+  --mono: 'JetBrains Mono', 'Consolas', monospace;
+  --shadow: 0 2px 12px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.1);
+  --radius: 10px;
+  /* Series accent: forest green — distinct from teal, amber, indigo */
+  --theme: #2D6A2D;
+  --theme-light: #EAF4EA;
+  --theme-dark: #1A4A1A;
+  --theme-glow: rgba(45,106,45,0.10);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 17px; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.72; -webkit-font-smoothing: antialiased; }
+
+.series-banner {
+  background: var(--accent-dark);
+  color: rgba(255,255,255,0.85);
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.45rem 1rem;
+}
+.series-banner span { color: #A8D8D1; }
+
+.hero {
+  background: linear-gradient(135deg, #0F2E0F 0%, #2D6A2D 45%, #3E8C3E 100%);
+  color: white;
+  padding: 4rem 2rem 3.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(ellipse at 30% 50%, rgba(255,255,255,0.07) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 20%, rgba(255,255,255,0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+.hero h1 { font-family: var(--serif); font-size: 2.8rem; font-weight: 700; margin-bottom: 0.6rem; letter-spacing: -0.02em; position: relative; }
+.hero .subtitle { font-size: 1.15rem; opacity: 0.92; max-width: 680px; margin: 0 auto 1.5rem; line-height: 1.6; position: relative; }
+.hero .byline { font-size: 0.88rem; opacity: 0.75; position: relative; font-style: italic; font-family: var(--serif); }
+
+.tab-nav {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem;
+  padding: 1rem 1.5rem; background: var(--card-bg);
+  border-bottom: 2px solid var(--border);
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.tab-btn {
+  font-family: var(--sans); font-size: 0.88rem; font-weight: 600;
+  padding: 0.55rem 1.1rem; border: 2px solid transparent; border-radius: 8px;
+  background: var(--warm); color: var(--text-muted); cursor: pointer; transition: all 0.25s ease; white-space: nowrap;
+}
+.tab-btn:hover { border-color: var(--theme); color: var(--theme); }
+.tab-btn.active { background: var(--theme); color: white; border-color: var(--theme); }
+
+.container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+.tab-panel { display: none; animation: fadeUp 0.4s ease; }
+.tab-panel.active { display: block; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+.card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; margin-bottom: 1.5rem; box-shadow: var(--shadow); transition: box-shadow 0.3s ease; }
+.card:hover { box-shadow: var(--shadow-lg); }
+.card h2 { font-family: var(--serif); font-size: 1.65rem; font-weight: 700; color: var(--theme-dark); margin-bottom: 1rem; line-height: 1.3; }
+.card h3 { font-family: var(--serif); font-size: 1.3rem; font-weight: 600; color: var(--theme); margin: 1.4rem 0 0.6rem; }
+.card h4 { font-family: var(--sans); font-size: 1rem; font-weight: 700; color: var(--theme-dark); margin: 1rem 0 0.4rem; }
+.card p { margin-bottom: 0.9rem; }
+.card ul, .card ol { padding-left: 1.4rem; margin-bottom: 0.9rem; }
+.card li { margin-bottom: 0.45rem; line-height: 1.65; }
+
+.callout { background: var(--accent-light); border-left: 4px solid var(--accent); padding: 1.2rem 1.4rem; border-radius: 0 var(--radius) var(--radius) 0; margin: 1.2rem 0; font-size: 0.97rem; }
+.callout.warm { background: var(--highlight); border-left-color: #D4A843; }
+.callout.honest { background: #FFF0F0; border-left-color: #C25B56; }
+.callout.theme { background: var(--theme-light); border-left-color: var(--theme); }
+.callout strong { color: var(--accent-dark); }
+.callout.warm strong { color: #8B6914; }
+.callout.honest strong { color: #993333; }
+.callout.theme strong { color: var(--theme-dark); }
+
+.wisdom { font-family: var(--serif); font-style: italic; font-size: 1.15rem; text-align: center; color: var(--theme-dark); padding: 1.5rem 2rem; margin: 1.5rem 0; border-top: 2px solid var(--theme-light); border-bottom: 2px solid var(--theme-light); line-height: 1.6; }
+.wisdom .attribution { font-size: 0.85rem; color: var(--text-muted); font-style: normal; margin-top: 0.4rem; display: block; }
+
+.steps { margin: 1rem 0; }
+.step { display: flex; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+.step:last-child { border-bottom: none; }
+.step-num { background: var(--theme); color: white; font-family: var(--mono); font-size: 0.85rem; font-weight: 700; width: 2rem; height: 2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 0.15rem; }
+.step-body strong { display: block; font-size: 1rem; color: var(--theme-dark); margin-bottom: 0.25rem; }
+.step-body p { margin: 0; font-size: 0.95rem; }
+
+.reflection { background: linear-gradient(135deg, var(--warm) 0%, #F9F4EC 100%); border: 2px solid #D4C5A9; border-radius: var(--radius); padding: 1.5rem 1.8rem; margin: 1.5rem 0; }
+.reflection h3 { font-family: var(--serif); color: #8B6914; margin-bottom: 0.8rem; }
+.reflection .q { padding: 0.6rem 0; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 0.97rem; display: flex; align-items: flex-start; gap: 0.6rem; }
+.reflection .q:last-child { border-bottom: none; }
+.reflection .q-num { font-family: var(--mono); font-size: 0.82rem; color: var(--theme); font-weight: 500; flex-shrink: 0; margin-top: 0.1rem; }
+
+.definition { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.3rem; margin: 0.8rem 0; font-size: 0.95rem; }
+.definition .term { font-family: var(--mono); font-weight: 500; color: var(--theme); font-size: 0.9rem; }
+.definition .meaning { margin-top: 0.3rem; color: var(--text); }
+
+/* NOTEBOOK DEMO — shows what annotated notes look like */
+.notebook {
+  background: #FEFEF5;
+  border: 2px solid #D4C87A;
+  border-radius: var(--radius);
+  padding: 1.5rem 1.8rem;
+  margin: 1.2rem 0;
+  font-family: var(--serif);
+  font-size: 0.97rem;
+  line-height: 1.8;
+  position: relative;
+}
+.notebook::before {
+  content: '';
+  position: absolute;
+  left: 3.2rem; top: 0; bottom: 0;
+  width: 2px;
+  background: rgba(220,150,150,0.4);
+}
+.notebook-label {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 0.8rem;
+  display: block;
+}
+.nb-line { padding-left: 3rem; position: relative; }
+.nb-main { color: var(--text); }
+.nb-annotation {
+  color: #C25B56;
+  font-style: italic;
+  font-size: 0.9rem;
+  padding-left: 0.4rem;
+}
+.nb-margin {
+  font-size: 0.82rem;
+  color: #5B8A5B;
+  border-left: 2px solid #5B8A5B;
+  padding-left: 0.6rem;
+  margin: 0.3rem 0 0.3rem 0.5rem;
+  font-style: italic;
+}
+.nb-question {
+  font-size: 0.85rem;
+  color: #7B4CA0;
+  font-style: italic;
+}
+.nb-key {
+  background: rgba(255,230,100,0.4);
+  border-radius: 3px;
+  padding: 0 0.2rem;
+}
+
+/* CORNELL TEMPLATE */
+.cornell-template {
+  border: 2px solid var(--theme);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 1.2rem 0;
+  font-size: 0.9rem;
+}
+.cornell-header {
+  background: var(--theme);
+  color: white;
+  padding: 0.6rem 1rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.cornell-body {
+  display: grid;
+  grid-template-columns: 1fr 2.5fr;
+  min-height: 200px;
+}
+.cornell-cues {
+  background: var(--theme-light);
+  border-right: 2px solid var(--theme);
+  padding: 1rem;
+}
+.cornell-notes {
+  background: var(--card-bg);
+  padding: 1rem;
+}
+.cornell-cues-label, .cornell-notes-label {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 0.6rem;
+  display: block;
+}
+.cornell-cue-item {
+  font-size: 0.88rem;
+  color: var(--theme-dark);
+  font-weight: 600;
+  padding: 0.4rem 0;
+  border-bottom: 1px dotted var(--border);
+}
+.cornell-cue-item:last-child { border-bottom: none; }
+.cornell-note-text {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+.cornell-summary {
+  background: var(--warm);
+  border-top: 2px solid var(--theme);
+  padding: 0.8rem 1rem;
+  font-size: 0.88rem;
+}
+.cornell-summary-label {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 0.3rem;
+  display: block;
+}
+
+/* BEFORE / AFTER COMPARISON */
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1.2rem 0;
+}
+.compare-box {
+  border-radius: var(--radius);
+  padding: 1.2rem;
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+.compare-box.bad {
+  background: #FFF5F5;
+  border: 2px solid #E8B0B0;
+}
+.compare-box.good {
+  background: var(--theme-light);
+  border: 2px solid var(--theme);
+}
+.compare-box-label {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.7rem;
+  display: block;
+  font-weight: 600;
+}
+.compare-box.bad .compare-box-label { color: #993333; }
+.compare-box.good .compare-box-label { color: var(--theme-dark); }
+
+/* STRATEGY CARD GRID */
+.strategy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin: 1.2rem 0;
+}
+.strategy-card {
+  background: var(--card-bg);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.2rem 1.4rem;
+  cursor: default;
+}
+.strategy-card .sc-icon { font-size: 1.6rem; margin-bottom: 0.5rem; }
+.strategy-card .sc-title { font-family: var(--serif); font-size: 1.05rem; font-weight: 700; color: var(--theme-dark); margin-bottom: 0.35rem; }
+.strategy-card .sc-body { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+
+/* QUIZ */
+.quiz-container { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; box-shadow: var(--shadow); }
+.quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.5rem; }
+.quiz-header h3 { font-family: var(--serif); font-size: 1.3rem; color: var(--theme); margin: 0; }
+.quiz-score { font-family: var(--mono); font-size: 0.85rem; color: var(--text-muted); background: var(--warm); padding: 0.3rem 0.8rem; border-radius: 6px; }
+.quiz-question { font-size: 1.05rem; font-weight: 600; margin-bottom: 1.2rem; line-height: 1.5; color: var(--text); }
+.quiz-options { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.2rem; }
+.quiz-option { padding: 0.85rem 1.2rem; border: 2px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 0.97rem; transition: all 0.2s; background: var(--card-bg); text-align: left; font-family: var(--sans); }
+.quiz-option:hover:not(:disabled) { border-color: var(--theme); background: var(--theme-light); }
+.quiz-option.correct { border-color: var(--accent); background: var(--accent-light); color: var(--accent-dark); font-weight: 600; }
+.quiz-option.wrong { border-color: #C25B56; background: #FFF0F0; color: #993333; }
+.quiz-option:disabled { cursor: default; }
+.quiz-explanation { background: var(--warm); border-left: 4px solid var(--theme); padding: 1rem 1.2rem; border-radius: 0 8px 8px 0; font-size: 0.93rem; margin-bottom: 1rem; display: none; line-height: 1.65; }
+.quiz-explanation.show { display: block; }
+.quiz-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; }
+.quiz-btn { background: var(--theme); color: white; border: none; padding: 0.65rem 1.5rem; border-radius: 8px; font-family: var(--sans); font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: filter 0.2s; }
+.quiz-btn:hover { filter: brightness(1.1); }
+.quiz-btn:disabled { background: var(--text-muted); cursor: default; filter: none; }
+.quiz-progress { font-size: 0.85rem; color: var(--text-muted); font-family: var(--mono); }
+.progress-bar-wrap { background: var(--border); border-radius: 6px; height: 8px; margin: 0.5rem 0 1rem; overflow: hidden; }
+.progress-bar { height: 100%; background: linear-gradient(90deg, var(--theme), #5BAF5B); border-radius: 6px; transition: width 0.5s ease; }
+.quiz-final { text-align: center; padding: 2rem; display: none; }
+.quiz-final.show { display: block; }
+.quiz-final-score { font-family: var(--serif); font-size: 3rem; font-weight: 700; color: var(--theme); margin-bottom: 0.5rem; }
+.quiz-final-msg { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6; }
+.quiz-restart { background: var(--theme); color: white; border: none; padding: 0.75rem 2rem; border-radius: 8px; font-family: var(--sans); font-size: 1rem; font-weight: 600; cursor: pointer; }
+
+/* FLASHCARDS */
+.flashcard-controls { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.2rem; align-items: center; }
+.fc-filter { font-family: var(--sans); font-size: 0.82rem; font-weight: 600; padding: 0.35rem 0.85rem; border: 2px solid var(--border); border-radius: 6px; background: var(--warm); color: var(--text-muted); cursor: pointer; transition: all 0.2s; }
+.fc-filter:hover, .fc-filter.active { border-color: var(--theme); color: var(--theme); background: var(--theme-light); }
+.fc-count { margin-left: auto; font-size: 0.82rem; color: var(--text-muted); font-family: var(--mono); }
+.flashcard-scene { perspective: 1000px; height: 210px; margin-bottom: 1.2rem; cursor: pointer; }
+.flashcard { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.5s ease; }
+.flashcard.flipped { transform: rotateY(180deg); }
+.fc-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: var(--radius); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; text-align: center; border: 2px solid var(--border); }
+.fc-front { background: linear-gradient(135deg, #F0F7F0 0%, var(--warm) 100%); border-color: #B0CEB0; }
+.fc-back { background: linear-gradient(135deg, var(--theme-light) 0%, #D4EAD4 100%); border-color: var(--theme); transform: rotateY(180deg); }
+.fc-label { font-family: var(--mono); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 0.6rem; }
+.fc-content { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; color: var(--text); line-height: 1.4; }
+.fc-back .fc-content { color: var(--theme-dark); }
+.fc-hint { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; font-style: italic; }
+.fc-nav { display: flex; justify-content: center; gap: 1rem; align-items: center; }
+.fc-btn { background: var(--theme); color: white; border: none; padding: 0.55rem 1.3rem; border-radius: 7px; font-family: var(--sans); font-weight: 600; font-size: 0.9rem; cursor: pointer; }
+.fc-btn.secondary { background: var(--warm); color: var(--text); border: 2px solid var(--border); }
+.fc-position { font-family: var(--mono); font-size: 0.82rem; color: var(--text-muted); }
+
+/* DISCLAIMER */
+.disclaimer-wrap { background: rgba(255,248,225,0.6); border: 1px solid #E8C98A; border-radius: var(--radius); margin-bottom: 1.5rem; overflow: hidden; }
+.disclaimer-toggle { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1.2rem; cursor: pointer; font-size: 0.83rem; color: #8B6914; font-weight: 600; user-select: none; }
+.disclaimer-toggle .darrow { transition: transform 0.3s; }
+.disclaimer-wrap.open .darrow { transform: rotate(180deg); }
+.disclaimer-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+.disclaimer-wrap.open .disclaimer-body { max-height: 400px; }
+.disclaimer-inner { padding: 0 1.2rem 1rem; font-size: 0.82rem; color: var(--text-muted); line-height: 1.65; }
+.disclaimer-inner p { margin-bottom: 0.4rem; }
+
+.site-footer { text-align: center; padding: 2rem; font-size: 0.85rem; color: var(--text-muted); border-top: 2px solid var(--border); margin-top: 2rem; font-family: var(--serif); font-style: italic; }
+
+@media (max-width: 768px) {
+  .hero h1 { font-size: 2rem; }
+  .hero { padding: 3rem 1.2rem 2.5rem; }
+  .tab-nav { gap: 0.35rem; padding: 0.7rem 0.8rem; }
+  .tab-btn { font-size: 0.78rem; padding: 0.4rem 0.7rem; }
+  .container { padding: 1.2rem 1rem 3rem; }
+  .card { padding: 1.4rem; }
+  .compare-grid { grid-template-columns: 1fr; }
+  .cornell-body { grid-template-columns: 1fr; }
+  .cornell-cues { border-right: none; border-bottom: 2px solid var(--theme); }
+  .strategy-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  html { font-size: 15px; }
+  .hero h1 { font-size: 1.7rem; }
+  .tab-btn { font-size: 0.72rem; padding: 0.35rem 0.55rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="series-banner">Foundations: Closing the Gap &nbsp;&mdash;&nbsp; <span>Note-Taking and Active Reading</span></div>
+
+<div class="hero">
+  <h1>Note-Taking and Active Reading</h1>
+  <div class="subtitle">The skills your K-12 teachers assumed someone else had taught you. Nobody did. Here they are, explained from the beginning, with the research behind why they work.</div>
+  <div class="byline">Passive exposure to information is not learning. Learning is what happens when you work with information. This guide shows you how to do that.</div>
+</div>
+
+<nav class="tab-nav" id="tabNav">
+  <button class="tab-btn active" data-tab="start">Start Here</button>
+  <button class="tab-btn" data-tab="reading">Active Reading</button>
+  <button class="tab-btn" data-tab="annotation">Annotation</button>
+  <button class="tab-btn" data-tab="notetaking">Note-Taking Systems</button>
+  <button class="tab-btn" data-tab="lecture">Lecture Notes</button>
+  <button class="tab-btn" data-tab="review">Review and Retention</button>
+  <button class="tab-btn" data-tab="quiz">Quiz</button>
+  <button class="tab-btn" data-tab="flashcards">Flashcards</button>
+</nav>
+
+<div class="container">
+
+<!-- ═══════ START HERE ═══════ -->
+<div class="tab-panel active" id="panel-start">
+
+  <div class="disclaimer-wrap" id="disc">
+    <div class="disclaimer-toggle" onclick="toggleDisc()">
+      <span>&#9888;&#65039; Important Disclaimer</span>
+      <span class="darrow">&#9660;</span>
+    </div>
+    <div class="disclaimer-body">
+      <div class="disclaimer-inner">
+        <p>This resource is provided free of charge as a supplemental study aid. It is not a substitute for your course textbook, your instructor's materials, or formal tutoring. While every effort has been made to ensure accuracy, errors may exist. Always verify against your official course materials.</p>
+        <p>Not affiliated with any university, college, testing organization, or publisher. Content is provided "as is" without warranty.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>What Nobody Taught You About Learning</h2>
+
+    <p>Most students arrive at college believing that learning works like this: you sit in class, the professor talks, you listen, and somehow the information transfers into your brain. Then you read the textbook, and somehow that transfers too. Then you study, which means reading your notes again, and somehow that makes you ready for the exam.</p>
+
+    <p>None of that is how learning actually works. And the mismatch between what students think they are doing and what is actually happening in their brains is one of the primary reasons intelligent, capable students do poorly on exams they thought they were prepared for.</p>
+
+    <p>Learning is not passive absorption. It is active construction. Your brain does not record information the way a camera records video. It builds meaning by connecting new information to things it already knows, by retrieving stored information, by elaborating on ideas, and by restructuring what it already holds to accommodate something new. Every one of those processes requires you to actively work with the material, not just be in its presence.</p>
+
+    <div class="callout honest">
+      <strong>Why you were not taught this:</strong> K-12 education shifted heavily toward digital content delivery during the 2000s and 2010s. Slide presentations replaced board notes. Printed packets replaced student copying. Typed documents replaced handwritten work. The COVID years accelerated this trend dramatically, with students spending years in largely passive screen-based learning environments. The unintended result is a generation that has spent more time consuming academic content than any previous generation, and has less practice actually working with it.
+    </div>
+
+    <h3>The Two Skills This Guide Teaches</h3>
+
+    <p>Active reading is not the same as reading. It is a set of deliberate behaviors you use while reading that force your brain to process information rather than just scan it. It includes previewing, questioning, annotating, summarizing, and connecting ideas as you go.</p>
+
+    <p>Effective note-taking is not transcription. It is a system for capturing the structure of ideas in a form that supports later retrieval and review. Good notes are not a complete record of what was said. They are a selective, organized representation of what was most important, in a format that helps your brain rebuild the full picture when you return to them later.</p>
+
+    <div class="callout warm">
+      <strong>A note on digital vs. paper:</strong> The research on note-taking consistently shows that handwritten notes produce better learning outcomes than typed notes, particularly for conceptual material. The reason is that typing is fast enough to allow near-verbatim transcription, which requires almost no mental processing. Handwriting forces you to listen, understand, and summarize in real time because you cannot write fast enough to copy everything down. This processing is the learning. That said, any notes taken with intention and reviewed systematically will outperform no notes regardless of medium.
+    </div>
+
+    <h3>What This Guide Covers</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Active Reading</strong>
+          <p>The SQ3R method and related strategies for reading a science textbook in a way that actually builds understanding rather than just exposure. How to read a chapter before you understand it and why that matters.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Annotation</strong>
+          <p>How to mark up a text in ways that are actually useful. Most students highlight randomly and call it studying. This section shows what annotation that supports learning actually looks like.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Note-Taking Systems</strong>
+          <p>The Cornell method, outline notes, and concept mapping. When to use each, and how to choose a system that works for the type of content you are studying.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong>Lecture Note-Taking</strong>
+          <p>What to capture, what to skip, and how to fill gaps after class. How to handle a professor who speaks faster than you can write, and what to do when you get lost.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <strong>Review and Retention</strong>
+          <p>Spaced repetition and retrieval practice, the two most evidence-supported study strategies in the research literature. Why rereading your notes is nearly useless, and what to do instead.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ ACTIVE READING ═══════ -->
+<div class="tab-panel" id="panel-reading">
+  <div class="card">
+    <h2>Active Reading</h2>
+    <p>A science textbook chapter is not written the way a novel is written. It is not meant to be read from first word to last word in a single linear pass. It is a reference document organized to support learning, and it has structural features that most students never use because nobody showed them how.</p>
+
+    <div class="callout honest">
+      <strong>What passive reading looks like:</strong> You open the chapter to page one. You read each sentence as it comes. Your eyes move across the words. After forty minutes, you reach the end. You have a vague sense of having been exposed to the material. When you try to recall specific content, most of it is gone. This is not a failure of intelligence. It is a failure of method.
+    </div>
+
+    <h3>The SQ3R Method</h3>
+    <p>SQ3R is one of the oldest and most thoroughly researched active reading frameworks. It is not complicated. It is five steps that change your relationship to a text from passive receiver to active questioner. The research shows it consistently produces better comprehension and retention than linear reading alone.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">S</div>
+        <div class="step-body">
+          <strong>Survey</strong>
+          <p>Before you read a word of the actual content, spend three to five minutes previewing the entire chapter. Read the chapter title, section headings, figure captions, bolded terms, the chapter summary, and the review questions at the end. This gives your brain a scaffolding structure to hang new information on as you read. You are building a map before you start the journey.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">Q</div>
+        <div class="step-body">
+          <strong>Question</strong>
+          <p>Before reading each section, turn the section heading into a question. "The Structure of the Cell Membrane" becomes "What is the structure of the cell membrane, and why does it matter?" "Enzyme Kinetics" becomes "How do enzyme kinetics work? What affects enzyme speed?" Write these questions down. You are giving your brain a specific goal for each section instead of just wandering through it.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">R1</div>
+        <div class="step-body">
+          <strong>Read</strong>
+          <p>Now read the section actively, looking for the answer to your question. Read with a pencil or pen in hand. Do not highlight yet. Mark things you do not understand with a question mark. Circle terms you need to look up. Bracket passages that seem important. Read for meaning, not for completion.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">R2</div>
+        <div class="step-body">
+          <strong>Recite</strong>
+          <p>After finishing each section, close the book or look away and answer your question out loud or in writing. In your own words, without looking. This is the single most important step and the one almost every student skips. The act of retrieving information consolidates it. If you cannot answer the question from memory, you have not learned it yet. Go back and reread, then try again.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">R3</div>
+        <div class="step-body">
+          <strong>Review</strong>
+          <p>After finishing the entire chapter, review your questions and attempt to answer all of them from memory. Fill gaps. Connect ideas across sections. Write a three-to-five sentence summary of the entire chapter in your own words. This synthesis step is where surface-level understanding deepens into durable knowledge.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Reading Science Figures and Diagrams</h3>
+    <p>Science textbooks are heavily visual, and most students read past figures without engaging with them. This is a significant mistake. Figures in science textbooks are not decorations. They are often the most information-dense part of the page, and many exam questions test your understanding of the processes they depict.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Read the figure caption first</strong>
+          <p>The caption tells you what the figure is showing and often explains the most important take-away. Read it before you look at the figure itself.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Identify the axes, labels, and arrows</strong>
+          <p>In a graph: what are the x and y axes measuring, and what do the units mean? In a diagram: follow the arrows to understand the direction of a process. What goes in? What comes out? What changes?</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Cover the figure and reproduce it from memory</strong>
+          <p>The most effective way to learn a figure is to redraw it by hand. You do not need to reproduce every detail. You need to capture the structure and the relationships. This forces your brain to encode the visual logic rather than just recognize it when you see it again.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout theme">
+      <strong>The recognition vs. recall problem:</strong> Most students confuse recognizing information with knowing it. When you reread your textbook, everything feels familiar. That familiarity feels like learning. It is not. Recognition is easy and does not predict exam performance. Recall, being able to retrieve information without prompts, does. The only way to build recall is to practice retrieval. The Recite step in SQ3R is retrieval practice. Every time you close the book and try to reconstruct what you just read, you are doing the most effective thing you can do for retention.
+    </div>
+
+    <h3>Reading Rate vs. Reading Depth</h3>
+    <p>College students often feel pressure to read faster because there is so much assigned. The instinct is to skim more to cover more ground. This is almost always the wrong trade-off for science courses. Reading a section once with full SQ3R engagement produces far better outcomes than reading it three times passively. You will spend less total time on a chapter if you read it once properly than if you read it quickly, understand little, and have to reread it repeatedly before an exam.</p>
+
+    <div class="callout warm">
+      <strong>Practical starting point:</strong> The next time you open a textbook chapter, spend exactly five minutes surveying before you read a single content sentence. Read headings, captions, bolded terms, the summary, and the review questions. Notice how differently you engage with the content when you start reading with that scaffold in place. Most students report that this single change makes a noticeable difference on the first try.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ ANNOTATION ═══════ -->
+<div class="tab-panel" id="panel-annotation">
+  <div class="card">
+    <h2>Annotation: Marking Text That Actually Helps</h2>
+    <p>Most students annotate textbooks the same way: they highlight large blocks of yellow as they read and call it studying. The research on highlighting is consistently discouraging: passive highlighting with no other processing produces little to no improvement in retention compared to plain reading. The problem is not the tool. It is the absence of thinking.</p>
+
+    <p>Effective annotation is a conversation with the text. It is a set of marks and marginal notes that record your thinking as you read: your questions, your connections, your summaries, your confusions, and your assessments of importance. Done well, it transforms your textbook into a record of an active mental engagement that you can return to and quickly reconstruct.</p>
+
+    <div class="callout honest">
+      <strong>Why passive highlighting feels productive:</strong> It is physical, deliberate, and leaves a visible mark. Your brain interprets the act of highlighting as doing something. But if you highlighted without understanding the sentence, the highlight means nothing. If you highlighted everything that seemed important, the highlight tells you nothing when you return. Effective annotation requires you to decide what matters and why, in the moment, in your own words.
+    </div>
+
+    <h3>A System That Works</h3>
+    <p>Here is a practical annotation system that most students can apply immediately. The specific marks matter less than using them consistently and writing actual words in the margins.</p>
+
+    <div class="strategy-grid">
+      <div class="strategy-card">
+        <div class="sc-icon">&#10003;</div>
+        <div class="sc-title">Underline sparingly</div>
+        <div class="sc-body">Underline only the single most important sentence in a paragraph, not every sentence that seems relevant. Forcing yourself to choose one sentence per paragraph makes you actively decide what the paragraph's main point is.</div>
+      </div>
+      <div class="strategy-card">
+        <div class="sc-icon">&#9312;</div>
+        <div class="sc-title">Number key items</div>
+        <div class="sc-body">When text lists a sequence of steps, causes, effects, or examples, number them in the margin even if the text does not number them. This reveals structure that the prose disguises and makes the list easier to memorize and review.</div>
+      </div>
+      <div class="strategy-card">
+        <div class="sc-icon">&#63;</div>
+        <div class="sc-title">Mark confusion</div>
+        <div class="sc-body">Put a large question mark next to anything you do not understand after reading it twice. Do not skip it. Flag it and return to it after finishing the section. Your questions are the most valuable study material you will generate.</div>
+      </div>
+      <div class="strategy-card">
+        <div class="sc-icon">&#10033;</div>
+        <div class="sc-title">Star big ideas</div>
+        <div class="sc-body">Use a star or asterisk for ideas that seem especially fundamental or that connect to something else you know. These are the things your instructor is likely to test, and your recognition of their importance is itself a sign of growing comprehension.</div>
+      </div>
+      <div class="strategy-card">
+        <div class="sc-icon">&#8614;</div>
+        <div class="sc-title">Write margin summaries</div>
+        <div class="sc-body">After each paragraph or short section, write two to five words in the margin that capture the main idea. Not a highlight. A summary in your words. This forces processing. "Enzyme speeds up reaction" is better than a yellow stripe across "enzymes lower the activation energy of chemical reactions."</div>
+      </div>
+      <div class="strategy-card">
+        <div class="sc-icon">&#8596;</div>
+        <div class="sc-title">Draw connections</div>
+        <div class="sc-body">When a concept connects to something you learned earlier, write a note in the margin: "relates to ATP synthesis?" or "like osmosis?" These connections are how understanding deepens. Each connection your brain makes is a retrieval pathway being built.</div>
+      </div>
+    </div>
+
+    <h3>What Good Annotation Looks Like</h3>
+    <p>Here is a short passage annotated well versus annotated poorly.</p>
+
+    <div class="compare-grid">
+      <div class="compare-box bad">
+        <span class="compare-box-label">Passive annotation (unhelpful)</span>
+        <p style="font-size:0.9rem;line-height:1.7;color:#993333;">
+          <span style="background:rgba(255,220,0,0.5);">Enzymes are biological catalysts that speed up chemical reactions in cells. They work by lowering the activation energy required for a reaction to proceed. Each enzyme has an active site, a region with a specific shape that binds to its substrate. The enzyme-substrate complex forms temporarily, the reaction occurs, and the products are released.</span>
+        </p>
+      </div>
+      <div class="compare-box good">
+        <span class="compare-box-label">Active annotation (useful)</span>
+        <div class="notebook" style="border:none;background:transparent;padding:0;">
+          <div class="nb-line"><span class="nb-main">Enzymes are biological <span class="nb-key">catalysts</span> that speed up chemical reactions in cells.</span> <span class="nb-margin">lower activation energy = key mechanism</span></div>
+          <div class="nb-line"><span class="nb-main">Each enzyme has an <span class="nb-key">active site</span> that binds its substrate.</span> <span class="nb-annotation">&#x2192; specific shape = only fits one substrate (lock &amp; key)</span></div>
+          <div class="nb-line"><span class="nb-question">? how does lowering activation energy actually work physically?</span></div>
+          <div class="nb-line"><span class="nb-annotation">&#x2733; this connects to reaction coordinate diagrams in chem</span></div>
+        </div>
+      </div>
+    </div>
+
+    <p>The passive version is indistinguishable from the original text when you return to it. The active version shows thinking: a summary of the mechanism, a conceptual note about specificity, a question to follow up on, and a connection to prior knowledge.</p>
+
+    <div class="callout theme">
+      <strong>On digital reading:</strong> If you read on a tablet or PDF reader, you can still annotate effectively using comments and text boxes. The key constraint is that typed comments must be actual words and ideas, not just color-coded highlighting. Many students find that printing a chapter and annotating on paper significantly improves their engagement, at least for difficult material. The physical act of writing appears to have genuine cognitive benefits that go beyond preference.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ NOTE-TAKING SYSTEMS ═══════ -->
+<div class="tab-panel" id="panel-notetaking">
+  <div class="card">
+    <h2>Note-Taking Systems</h2>
+    <p>There is no single best way to take notes for all situations. Different types of content call for different approaches. What matters is that your system has structure, that it forces processing, and that it produces notes you can actually use for retrieval practice later. Here are the three most effective systems for college science students.</p>
+
+    <h3>System 1: The Cornell Method</h3>
+    <p>The Cornell method was developed at Cornell University in the 1950s and remains one of the most research-supported note-taking formats for lecture and reading material. It divides the page into three sections: a narrow cue column on the left, a wider notes column on the right, and a summary section at the bottom.</p>
+
+    <div class="cornell-template">
+      <div class="cornell-header">Cornell Notes Format &mdash; Example: Cell Membrane Structure</div>
+      <div class="cornell-body">
+        <div class="cornell-cues">
+          <span class="cornell-cues-label">Cue Column (fill after class)</span>
+          <div class="cornell-cue-item">What is the phospholipid bilayer?</div>
+          <div class="cornell-cue-item">Why is the membrane called "fluid"?</div>
+          <div class="cornell-cue-item">What do membrane proteins do?</div>
+          <div class="cornell-cue-item">Hydrophilic vs. hydrophobic parts?</div>
+        </div>
+        <div class="cornell-notes">
+          <span class="cornell-notes-label">Notes (during class/reading)</span>
+          <div class="cornell-note-text">
+            Cell membrane = phospholipid bilayer. Two layers of phospholipids arranged tail-to-tail. Hydrophilic heads face outward (toward water). Hydrophobic tails face inward (away from water).<br><br>
+            Fluid mosaic model: lipids can move laterally, giving membrane flexibility. Proteins embedded throughout: some span entire membrane (integral), some attach to surface (peripheral).<br><br>
+            Membrane proteins: channels (allow specific molecules through), carriers (transport via shape change), receptors (signal binding), enzymes (catalyze reactions at surface).
+          </div>
+        </div>
+      </div>
+      <div class="cornell-summary">
+        <span class="cornell-summary-label">Summary (write after review)</span>
+        The cell membrane is a phospholipid bilayer with hydrophilic heads facing water and hydrophobic tails facing inward. Membrane proteins serve as channels, carriers, receptors, and enzymes. The fluid mosaic model describes its flexible, mosaic-like structure.
+      </div>
+    </div>
+
+    <p>The Cornell method works because the cue column transforms your notes into a built-in retrieval practice tool. Cover the notes column, read each cue, and try to answer it from memory. Anything you cannot answer is what you need to study. The summary forces synthesis at the end of each page, which consolidates understanding.</p>
+
+    <div class="callout theme">
+      <strong>The single most important habit for Cornell notes:</strong> Fill in the cue column within 24 hours of taking the notes. Do not wait until the night before the exam. The questions you write in the cue column are only useful if you can no longer quite remember the answers, which happens within a day or two of the lecture. If you wait two weeks, you will either remember everything and the questions are trivial, or you will have forgotten so much that answering them is overwhelming.
+    </div>
+
+    <h3>System 2: Outline Notes</h3>
+    <p>Outline notes organize content hierarchically using indentation to show the relationship between main ideas and supporting details. They work well when content has a clear hierarchical structure, which is true of most textbook chapters and many lectures.</p>
+
+    <div class="notebook">
+      <span class="notebook-label">Outline Notes Example: Cellular Respiration</span>
+      <div class="nb-line nb-main">I. Cellular Respiration Overview</div>
+      <div class="nb-line nb-main" style="padding-left:4.5rem;">A. Purpose: convert glucose to usable ATP energy</div>
+      <div class="nb-line nb-main" style="padding-left:4.5rem;">B. Overall equation: glucose + O&#8322; &rarr; CO&#8322; + H&#8322;O + ATP</div>
+      <div class="nb-line nb-main" style="padding-left:4.5rem;">C. Three main stages: glycolysis, Krebs cycle, electron transport chain</div>
+      <div class="nb-line nb-main" style="margin-top:0.5rem;">II. Glycolysis</div>
+      <div class="nb-line nb-main" style="padding-left:4.5rem;">A. Location: cytoplasm (no organelle needed)</div>
+      <div class="nb-line nb-main" style="padding-left:4.5rem;">B. Input: 1 glucose (6C)</div>
+      <div class="nb-line nb-main" style="padding-left:4.5rem;">C. Output: 2 pyruvate + 2 ATP net + 2 NADH</div>
+      <div class="nb-line nb-main" style="padding-left:4.5rem;">D. Does NOT require oxygen <span class="nb-annotation">(can happen in anaerobic conditions)</span></div>
+    </div>
+
+    <p>The key discipline for outline notes is maintaining the hierarchy. Every time you indent further, you are claiming that this point is subordinate to the one above it. Keeping that relationship explicit forces you to understand structure, not just sequence.</p>
+
+    <h3>System 3: Concept Mapping</h3>
+    <p>Concept maps represent knowledge as a network of connected ideas rather than a linear list. They work especially well for biological systems, biochemical pathways, and any topic where understanding relationships between concepts matters more than remembering sequence or hierarchy.</p>
+
+    <p>A concept map places the central idea in the middle of the page. Related concepts radiate outward, connected by labeled arrows. The label on each arrow is a verb or phrase that describes the relationship: "is a type of," "is regulated by," "produces," "requires," "leads to." The labels are the most important part. Forcing yourself to articulate the relationship between two concepts is where deep understanding is built.</p>
+
+    <div class="callout warm">
+      <strong>When to use which system:</strong> Cornell notes work best for lecture notes and reading notes on content-dense chapters. Outline notes work best for hierarchically organized content: taxonomies, classifications, multi-step processes with clear sequences. Concept maps work best for understanding relationships and processes: metabolic pathways, physiological systems, cause-and-effect chains. Many students use Cornell for class, then convert their Cornell notes into a concept map when reviewing, which combines the benefits of both.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ LECTURE NOTES ═══════ -->
+<div class="tab-panel" id="panel-lecture">
+  <div class="card">
+    <h2>Taking Notes During a Lecture</h2>
+    <p>A lecture is not a performance you watch. It is a live demonstration of how an expert thinks about and organizes a body of knowledge, delivered at a pace that requires you to simultaneously listen, understand, synthesize, and record. It is genuinely hard. The students who do it well have systems. The students who struggle are usually trying to transcribe rather than process.</p>
+
+    <div class="wisdom">
+      You cannot write down everything, and trying to will make you worse at taking notes.<br>
+      The goal is to capture the structure of the ideas, not the words.
+    </div>
+
+    <h3>Before the Lecture</h3>
+    <p>This step is skipped by most students and accounts for a disproportionate share of the performance gap between those who do well and those who struggle. Before attending a lecture on a topic, spend fifteen to twenty minutes with the corresponding textbook section. You do not need to read it thoroughly. Survey it: read headings, figures, bolded terms, and the summary. This gives you enough scaffolding that when the professor introduces a concept, you are encountering it for the second time, not the first.</p>
+
+    <p>Students who come to lecture having previewed the material can focus on understanding and recording connections. Students who come cold spend most of their cognitive energy just trying to keep up with unfamiliar vocabulary and miss the structure entirely.</p>
+
+    <h3>During the Lecture</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Record structure, not sentences</strong>
+          <p>When your professor says "There are three mechanisms by which enzymes can be inhibited," write "3 types of enzyme inhibition:" and then number the three as they are described. Do not try to copy the explanation verbatim. Capture the framework and enough key words to reconstruct the explanation later.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Flag emphasis signals</strong>
+          <p>Most professors telegraph what is important. "This is the key point here," "You will see this on the exam," "This is the part most students find confusing" are all signals to mark with a star or double underline. Pay particular attention when a professor slows down, repeats something, or writes on the board. These are not accidents.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Use abbreviations consistently</strong>
+          <p>Develop your own shorthand. "w/" for with, "w/o" for without, "&rarr;" for leads to, "=" for equals or is, "def" for definition, "ex" for example. The specific abbreviations matter less than using them consistently so you can read your own notes later.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong>Leave gaps intentionally</strong>
+          <p>When you miss something or fall behind, leave a blank space marked with a question mark. Do not stop writing to search back through your notes. Keep up with the present moment and fill the gap after class. A gap you know about is far better than a gap you do not.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <strong>Draw the figures</strong>
+          <p>When a professor draws a diagram on the board or displays a figure, copy it. Even a rough sketch is valuable. Figures in your handwritten notes are more memorable than the same figure in the textbook because you processed it actively when you drew it.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>The 24-Hour Rule: After the Lecture</h3>
+    <p>The most important note-taking habit most students never develop is reviewing notes within 24 hours of taking them. Memory research shows that a significant portion of new information is lost within the first 24 hours if it is not reviewed. A short review session the same day or the next morning is several times more effective than a longer review session a week later.</p>
+
+    <p>The after-lecture review should take fifteen to twenty minutes. Fill the gaps you marked during class. Add the cue questions if you use Cornell format. Rewrite any notes that are unclear while the lecture is still in memory. Mark the three to five most important ideas from the whole lecture with a star.</p>
+
+    <div class="compare-grid">
+      <div class="compare-box bad">
+        <span class="compare-box-label">What most students do</span>
+        <p style="font-size:0.9rem;line-height:1.7;">Take notes in class. Put the notebook away. Open it again the night before the exam. Spend hours rereading everything. Go to the exam feeling underprepared despite many hours of studying.</p>
+      </div>
+      <div class="compare-box good">
+        <span class="compare-box-label">What works</span>
+        <p style="font-size:0.9rem;line-height:1.7;">Take notes in class. Review and complete within 24 hours. Add cue questions. One week later, cover notes and answer cues from memory. Two weeks later, same. Arrive at exam having retrieved the material multiple times.</p>
+      </div>
+    </div>
+
+    <div class="callout theme">
+      <strong>On laptops in class:</strong> The research on laptop note-taking is fairly consistent: students who type notes tend to transcribe more and understand less than students who write by hand, particularly for conceptual material. If you take notes on a laptop, apply the same discipline you would with paper: summarize in your own words, do not transcribe. Turn off notifications. The research showing harms from laptop use is largely driven by students who are multitasking and transcribing, not by the device itself.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ REVIEW AND RETENTION ═══════ -->
+<div class="tab-panel" id="panel-review">
+  <div class="card">
+    <h2>Review and Retention: What the Research Actually Says</h2>
+    <p>There is a body of cognitive psychology research on the most effective study strategies, and the findings are clear and consistent. Two strategies stand far above all others in producing durable, retrievable learning: spaced practice and retrieval practice. Almost everything else students routinely do, including rereading, highlighting, and summarizing, produces much smaller effects. Understanding why these two strategies work will change how you study.</p>
+
+    <h3>Spaced Practice</h3>
+    <p>Spaced practice means distributing your study of a topic across multiple sessions over time rather than concentrating it in a single long session. Studying something for one hour over three separate days produces far better long-term retention than studying the same material for three hours in a single sitting. This is one of the most replicated findings in cognitive psychology, known as the spacing effect.</p>
+
+    <p>The reason is biological. Each time you retrieve and re-engage with a memory, you are reconsolidating it, rebuilding the neural pathways that encode it. Cramming creates a brief spike of familiarity that fades quickly because it does not trigger the retrieval and reconstruction process enough times. Spaced study produces slower, more effortful learning that lasts.</p>
+
+    <div class="callout honest">
+      <strong>Why cramming feels effective:</strong> Because it works in the short term. You can cram information and remember it for 24 to 48 hours. If your exam is tomorrow, cramming can get you through it. But the research consistently shows that material studied through cramming is lost much faster than material studied with spacing. If you are building toward a comprehensive exam, a clinical rotation, or any situation where you need the knowledge weeks or months later, cramming is a poor strategy even when it temporarily works.
+    </div>
+
+    <h3>Retrieval Practice</h3>
+    <p>Retrieval practice means testing yourself on material rather than restudying it. It is the act of pulling information out of memory, rather than pushing it in, that strengthens the memory most effectively. This is sometimes called the testing effect, and it is the most consistent finding in the learning science literature.</p>
+
+    <p>The implication is stark: rereading your notes or textbook is one of the least effective study strategies available to you, even though it feels productive and is the default behavior of most students. Every hour spent rereading would be better spent closing the book and trying to recall what you know, checking your accuracy, and returning to material you could not recall.</p>
+
+    <div class="strategy-grid">
+      <div class="strategy-card">
+        <div class="sc-icon">&#128196;</div>
+        <div class="sc-title">Flashcards done right</div>
+        <div class="sc-body">Flashcards are retrieval practice tools, not reading tools. The value is in attempting to recall the answer before flipping, not in reading both sides. If you flip a card immediately, you have learned nothing. Force yourself to generate an answer first, even if you are unsure.</div>
+      </div>
+      <div class="strategy-card">
+        <div class="sc-icon">&#9997;</div>
+        <div class="sc-title">Free recall</div>
+        <div class="sc-body">Close your notes and write down everything you remember about a topic on a blank page. Do not look at anything. This feels uncomfortable because you will realize how much you do not know. That discomfort is exactly what makes it effective.</div>
+      </div>
+      <div class="strategy-card">
+        <div class="sc-icon">&#128172;</div>
+        <div class="sc-title">Teach it out loud</div>
+        <div class="sc-body">Explain a concept out loud as if teaching it to someone who has not studied it. The places where you stumble or use vague language are the places where your understanding has gaps. You cannot teach something you do not understand.</div>
+      </div>
+      <div class="strategy-card">
+        <div class="sc-icon">&#10067;</div>
+        <div class="sc-title">Answer end-of-chapter questions</div>
+        <div class="sc-body">Most textbooks include review and application questions at the end of each chapter. These are not optional homework. They are retrieval practice built into the book. Use them. Try to answer each one before looking at the chapter. Check your answer. Revisit what you got wrong.</div>
+      </div>
+    </div>
+
+    <h3>Interleaving: Mixing It Up</h3>
+    <p>Blocked practice means studying one type of problem until you feel confident, then moving to the next. Interleaved practice means mixing problem types within a single study session. Research consistently shows that interleaved practice produces better long-term retention and transfer, even though it feels harder and less efficient in the moment.</p>
+
+    <p>When studying chemistry, do not do all stoichiometry problems then all gas law problems then all molarity problems. Mix them. When you have to figure out which method to apply before applying it, you are practicing a skill that the exam will require. Blocked practice builds the skill of executing a method; interleaved practice builds the skill of recognizing which method to use.</p>
+
+    <h3>Putting It Together: A Weekly Study Rhythm</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Before class</strong>
+          <p>Survey the chapter section corresponding to that day's lecture (15 minutes). Read headings, figures, bold terms, summary.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>During class</strong>
+          <p>Take notes using Cornell or outline format. Record structure, flag emphasis, leave gaps, draw figures.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Within 24 hours</strong>
+          <p>Fill gaps, add cue questions to Cornell notes, rewrite unclear sections, star the three to five most important ideas (20 minutes).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong>Active reading of the chapter</strong>
+          <p>Complete SQ3R on the assigned reading within two to three days of the lecture while content is still recent (45-60 minutes per chapter).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <strong>Weekly retrieval practice</strong>
+          <p>Once per week, cover your notes and answer cue questions from memory. Do free recall on the week's material. Work end-of-chapter practice problems (30-45 minutes).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <strong>Pre-exam distributed review</strong>
+          <p>Begin exam review at least one week before the exam. Do not begin two days before. Distribute review sessions across the week. Each session should be primarily retrieval practice, not rereading.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout warm">
+      <strong>The honest reason most students do not do this:</strong> It is harder. Retrieval practice is effortful and uncomfortable. Rereading feels easier and more pleasant. Cramming the night before produces a feeling of having done something. Distributed practice spread across weeks feels slow and uncertain. The discomfort of retrieval practice is the sensation of your brain working. It is exactly the feeling that produces durable learning, and most students interpret it as evidence they do not know the material rather than evidence they are learning it. You do not know the material yet. You are learning it. That is the whole point.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ QUIZ ═══════ -->
+<div class="tab-panel" id="panel-quiz">
+  <div class="quiz-container">
+    <div id="quiz-active">
+      <div class="quiz-header">
+        <h3>Note-Taking and Active Reading Quiz</h3>
+        <div class="quiz-score" id="q-score">Score: 0 / 0</div>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="q-bar" style="width:0%"></div></div>
+      <div class="quiz-question" id="q-question"></div>
+      <div class="quiz-options" id="q-options"></div>
+      <div class="quiz-explanation" id="q-explanation"></div>
+      <div class="quiz-nav">
+        <div class="quiz-progress" id="q-progress">Question 1 of 30</div>
+        <button class="quiz-btn" id="q-next" onclick="nextQuestion()" disabled>Next</button>
+      </div>
+    </div>
+    <div class="quiz-final" id="quiz-final">
+      <div class="quiz-final-score" id="final-score"></div>
+      <div class="quiz-final-msg" id="final-msg"></div>
+      <button class="quiz-restart" onclick="startQuiz()">Try Again</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ FLASHCARDS ═══════ -->
+<div class="tab-panel" id="panel-flashcards">
+  <div class="card" style="padding-bottom:1rem;">
+    <h2>Flashcards</h2>
+    <p>Click a card to flip it. Use these to test your understanding of the key strategies and concepts from this guide.</p>
+    <div class="flashcard-controls" id="fc-filters"></div>
+    <div class="flashcard-scene" onclick="flipCard()">
+      <div class="flashcard" id="fc-card">
+        <div class="fc-face fc-front">
+          <div class="fc-label">Concept or Strategy</div>
+          <div class="fc-content" id="fc-front-text"></div>
+          <div class="fc-hint">Click to reveal answer</div>
+        </div>
+        <div class="fc-face fc-back">
+          <div class="fc-label">Answer</div>
+          <div class="fc-content" id="fc-back-text"></div>
+        </div>
+      </div>
+    </div>
+    <div class="fc-nav">
+      <button class="fc-btn secondary" onclick="fcNav(-1)">&#8592; Prev</button>
+      <div class="fc-position" id="fc-pos"></div>
+      <button class="fc-btn" onclick="fcNav(1)">Next &#8594;</button>
+    </div>
+  </div>
+</div>
+
+</div>
+<div class="site-footer">
+  Foundations: Closing the Gap &mdash; Free supplemental resource. Not affiliated with any university or publisher.<br>
+  Always verify content against your official course materials.
+</div>
+
+<script>
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById('panel-' + this.dataset.tab).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tab-nav').offsetTop - 2, behavior: 'smooth' });
+    if (this.dataset.tab === 'quiz' && !quizStarted) startQuiz();
+    if (this.dataset.tab === 'flashcards') renderCard();
+  });
+});
+
+function toggleDisc() { document.getElementById('disc').classList.toggle('open'); }
+
+const questions = [
+  { cat: 'Active Reading', q: 'What does the "S" step in SQ3R involve?', opts: ['Summarizing after each section', 'Surveying the chapter before reading', 'Skimming the chapter quickly', 'Studying key vocabulary'], ans: 1, exp: 'Survey means spending 3-5 minutes previewing the entire chapter before reading: headings, figures, captions, bolded terms, the summary, and end-of-chapter questions. This builds a mental scaffold for the content that follows.' },
+  { cat: 'Active Reading', q: 'What is the most important step in SQ3R that most students skip?', opts: ['Reading', 'Surveying', 'Reciting (recall without looking)', 'Reviewing'], ans: 2, exp: 'The Recite step — closing the book and attempting to answer your question from memory — is retrieval practice in action. It is the step most students skip, and skipping it means missing most of the learning value of the method.' },
+  { cat: 'Active Reading', q: 'Why does passive rereading feel productive even though it is not?', opts: ['It takes a long time', 'Familiarity feels like knowledge but is not the same as recall', 'It uses too many cognitive resources', 'It is actually just as effective'], ans: 1, exp: 'When you reread material, it feels familiar. That familiarity is misinterpreted as knowing. But recognition and recall are different skills. Exams test recall. Rereading primarily builds recognition.' },
+  { cat: 'Active Reading', q: 'What is the best way to learn a science textbook figure?', opts: ['Highlight it and move on', 'Read the caption twice', 'Cover the figure and redraw it from memory', 'Read the surrounding paragraph carefully'], ans: 2, exp: 'Redrawing a figure from memory forces active processing of its structure and logic. The act of drawing encodes the visual information more durably than reading or highlighting.' },
+  { cat: 'Active Reading', q: 'When should you turn section headings into questions?', opts: ['After finishing each section', 'Before reading each section', 'At the end of the chapter', 'While reading the section'], ans: 1, exp: 'Turning headings into questions before reading gives your brain a specific goal for each section. You read with a purpose: to find the answer. This actively engages comprehension rather than passive scanning.' },
+  { cat: 'Annotation', q: 'Why is passive highlighting ineffective?', opts: ['It damages the book', 'It requires no processing or decision-making', 'It takes too long', 'It cannot be done digitally'], ans: 1, exp: 'Passive highlighting requires no actual thinking about the content. You can highlight a sentence you do not understand. Effective annotation requires deciding what matters, summarizing in your own words, and noting connections — all of which force processing.' },
+  { cat: 'Annotation', q: 'What should you write in the margin after reading a paragraph?', opts: ['The paragraph number', 'A 2-5 word summary in your own words', 'The page number', 'A copy of the key sentence'], ans: 1, exp: 'Writing a brief summary in your own words after each paragraph forces you to decide what the main point was and rephrase it. This processing step is where learning happens, not in the reading itself.' },
+  { cat: 'Annotation', q: 'What should you do when you reach something you do not understand?', opts: ['Skip it and keep reading', 'Mark it with a question mark and return to it', 'Read it again immediately three times', 'Stop and look it up online immediately'], ans: 1, exp: 'Flagging confusion with a question mark and continuing allows you to maintain momentum and context. You can return to flagged sections after finishing a section or chapter, often with better context to understand them.' },
+  { cat: 'Note-Taking', q: 'What are the three sections of Cornell notes?', opts: ['Heading, body, conclusion', 'Cue column, notes column, summary', 'Questions, answers, examples', 'Main ideas, details, review'], ans: 1, exp: 'Cornell notes divide the page into: a narrow cue column on the left (filled in after class with questions), a wider notes column on the right (filled during class), and a summary section at the bottom (written after review).' },
+  { cat: 'Note-Taking', q: 'When should you fill in the cue column in Cornell notes?', opts: ['During the lecture', 'Within 24 hours after the lecture', 'The night before the exam', 'After finishing the entire unit'], ans: 1, exp: 'The cue column should be filled within 24 hours while the lecture is still relatively fresh. The questions become a built-in retrieval practice tool — you cover the notes and try to answer each cue from memory.' },
+  { cat: 'Note-Taking', q: 'Concept maps are most useful for:', opts: ['Linear sequences of steps', 'Relationships between ideas in a complex system', 'Memorizing vocabulary definitions', 'Recording formulas'], ans: 1, exp: 'Concept maps represent knowledge as a network rather than a list or hierarchy. They are especially effective for topics where understanding the relationships between concepts matters, like metabolic pathways or physiological systems.' },
+  { cat: 'Note-Taking', q: 'In outline notes, what does indentation indicate?', opts: ['A new topic', 'A subordinate or supporting point', 'Something especially important', 'A definition'], ans: 1, exp: 'Indentation in outline notes shows hierarchical relationship: a more indented item is subordinate to the item above it. This forces you to understand and record the structure of the content, not just its sequence.' },
+  { cat: 'Lecture Notes', q: 'What is the most important thing to do before attending a lecture?', opts: ['Review the previous lecture\'s notes', 'Survey the corresponding textbook section', 'Copy down all slide titles', 'Review old exams'], ans: 1, exp: 'Spending 15-20 minutes previewing the textbook section (headings, figures, bold terms, summary) before lecture means you encounter concepts for the second time during class, allowing you to focus on understanding rather than just keeping up.' },
+  { cat: 'Lecture Notes', q: 'When a professor says "this is the key point" or "this will be on the exam," what should you do?', opts: ['Write it down in a different color', 'Mark it with a star or double underline', 'Record it on your phone', 'Just listen carefully'], ans: 1, exp: 'Professors telegraph emphasis with phrases like "this is key," "most students miss this," or by slowing down and repeating. These are signals to mark with a star or similar indicator so you can prioritize during review.' },
+  { cat: 'Lecture Notes', q: 'What should you do when you fall behind during a lecture?', opts: ['Stop writing and try to catch up by reading ahead', 'Leave a blank space with a question mark and keep going', 'Put your pen down until you understand', 'Record the lecture on your phone'], ans: 1, exp: 'Leaving a marked gap and continuing to keep up with the present moment is better than trying to catch up and losing both. You can fill the gap after class using the textbook, a classmate\'s notes, or office hours.' },
+  { cat: 'Lecture Notes', q: 'The 24-hour rule for notes says you should:', opts: ['Study for 24 hours before an exam', 'Review and complete your notes within 24 hours of the lecture', 'Take a 24-hour break before reviewing', 'Spend no more than 24 minutes reviewing each lecture'], ans: 1, exp: 'Reviewing notes within 24 hours of a lecture dramatically slows forgetting. A short review session the same day is several times more effective than a longer session a week later, because memory decay is steepest in the first 24 hours.' },
+  { cat: 'Retention', q: 'What is the spacing effect?', opts: ['Leaving physical space in your notes', 'Studying the same material across multiple sessions over time', 'Using different colored pens', 'Spacing out the topics you study in one session'], ans: 1, exp: 'The spacing effect is one of the most replicated findings in cognitive psychology: studying a topic across multiple sessions distributed over time produces far better long-term retention than the same total study time concentrated in one session (cramming).' },
+  { cat: 'Retention', q: 'What is retrieval practice?', opts: ['Rereading material to retrieve memories', 'Testing yourself by recalling information without looking at notes', 'Practicing in a quiet, low-distraction environment', 'Using search engines to find study resources'], ans: 1, exp: 'Retrieval practice is the act of pulling information out of memory without looking at notes or the textbook. The act of retrieval, not the act of reading, is what strengthens memory. Flashcards, free recall, and answering questions without notes are all retrieval practice.' },
+  { cat: 'Retention', q: 'Why does rereading notes feel productive even though it is not very effective?', opts: ['Because it takes a long time', 'Because familiarity feels like knowledge, which it is not', 'Because the brain burns more calories while reading', 'It actually is effective; the research is wrong'], ans: 1, exp: 'Rereading creates familiarity. Familiar material feels known. But the exam tests retrieval, not recognition. Students who study by rereading are often genuinely surprised to fail because the material felt familiar. It was familiar. It was not retrievable on demand.' },
+  { cat: 'Retention', q: 'What is interleaved practice?', opts: ['Studying one topic exhaustively before moving to the next', 'Mixing different types of problems within a single study session', 'Alternating between reading and writing', 'Studying with a partner who asks different questions'], ans: 1, exp: 'Interleaved practice mixes problem types within a session rather than doing all of one type then all of another (blocked practice). It is harder but produces better long-term retention and transfer because it forces you to identify which method to use, not just execute a method.' },
+  { cat: 'Retention', q: 'When should you begin reviewing for a major exam?', opts: ['The night before', 'Two days before', 'At least one week before', 'The morning of the exam'], ans: 2, exp: 'Beginning exam review at least one week before allows you to distribute study sessions over time (spacing effect) and to do multiple rounds of retrieval practice. Starting two days before forces cramming, which produces short-term retention that fades quickly.' },
+  { cat: 'Active Reading', q: 'What is the difference between recognition and recall?', opts: ['Recognition is faster; recall is more accurate', 'Recognition identifies something when you see it; recall retrieves it without prompts', 'Recognition is for vocabulary; recall is for concepts', 'They are the same thing measured differently'], ans: 1, exp: 'Recognition is the ability to identify something when you encounter it (multiple choice). Recall is the ability to retrieve it from memory without prompts (short answer, free recall). Exams test both, but students who only reread are practicing recognition while neglecting recall.' },
+  { cat: 'Annotation', q: 'What is the purpose of connecting ideas in your annotations?', opts: ['To save space on the page', 'To build retrieval pathways by linking new and existing knowledge', 'To make notes look more organized', 'To satisfy requirements for annotation assignments'], ans: 1, exp: 'Each connection you draw between a new idea and something you already know creates a new retrieval pathway in memory. Connected knowledge is more durable and more usable than isolated knowledge. Annotations that note connections actively build understanding.' },
+  { cat: 'Note-Taking', q: 'Research comparing handwritten vs. typed lecture notes generally finds:', opts: ['Typing produces identical learning outcomes', 'Handwriting produces better conceptual understanding because it forces summarization', 'Typing produces better outcomes because it is faster', 'The method makes no difference as long as notes are reviewed'], ans: 1, exp: 'Because writing by hand is slower than typing, students who write by hand cannot transcribe verbatim and must listen, understand, and summarize in real time. This processing is the learning. Typists often transcribe near-verbatim, which requires almost no processing and produces shallower encoding.' },
+  { cat: 'Lecture Notes', q: 'What is the value of using abbreviations in lecture notes?', opts: ['It looks more professional', 'It allows you to keep up with content without switching to transcription mode', 'It reduces the amount to review later', 'Professors prefer abbreviated notes'], ans: 1, exp: 'Consistent abbreviations let you record ideas quickly without slowing down to write full words. The key is consistency: abbreviations you cannot decode when you return to your notes are useless. Develop your own standard shorthand and use it every time.' },
+  { cat: 'Retention', q: 'Free recall practice involves:', opts: ['Looking through notes for things you forgot', 'Closing all materials and writing down everything you can remember', 'Asking a classmate to quiz you from their notes', 'Using a structured review guide provided by your professor'], ans: 1, exp: 'Free recall means starting with a blank page and writing down everything you can remember about a topic without looking at anything. It is uncomfortable because it quickly reveals how much you do not know. That discomfort is exactly what makes it an effective retrieval practice tool.' },
+  { cat: 'Active Reading', q: 'When reading a science figure, what should you read first?', opts: ['The surrounding paragraph', 'The figure caption', 'The axes and labels', 'The title of the chapter'], ans: 1, exp: 'The caption tells you what the figure shows and often explains the key takeaway. Reading it first orients your interpretation of the visual. Many students look at figures before reading captions and misinterpret what they are seeing.' },
+  { cat: 'Retention', q: '"Teach it out loud" is an effective study strategy because:', opts: ['It helps other students', 'Explaining something forces you to identify gaps in your own understanding', 'Saying things aloud activates auditory memory', 'It is faster than writing'], ans: 1, exp: 'Explaining a concept in your own words, as if teaching someone else, requires you to organize your understanding and fill in every piece of the explanation. The places where you stumble or use vague language precisely identify where your understanding is incomplete.' },
+  { cat: 'Note-Taking', q: 'What should you write on the arrows in a concept map?', opts: ['Nothing; only labels on the concept boxes', 'A verb or phrase describing the relationship between the connected concepts', 'The page number where the connection appears', 'The date you learned the connection'], ans: 1, exp: 'The labeled arrows are the most important part of a concept map. "X leads to Y," "X is required for Y," "X inhibits Y" captures the relationship, which is what understanding means in science. A map with unlabeled arrows shows topics but not comprehension.' },
+  { cat: 'Retention', q: 'The testing effect refers to:', opts: ['The negative effect of test anxiety on performance', 'The finding that being tested on material improves retention more than restudying it', 'The effect of practice tests on test-taking strategy', 'How test format affects what students study'], ans: 1, exp: 'The testing effect (or retrieval practice effect) is one of the strongest and most replicated findings in learning science: retrieving information from memory strengthens that memory more than re-encoding it through rereading. Testing yourself is studying.' },
+];
+
+let qIdx=0, qScore=0, answered=false, quizStarted=false, shuffled=[];
+function shuffle(a){return [...a].sort(()=>Math.random()-0.5);}
+
+function startQuiz(){
+  shuffled=shuffle(questions); qIdx=0; qScore=0; answered=false; quizStarted=true;
+  document.getElementById('quiz-final').classList.remove('show');
+  document.getElementById('quiz-active').style.display='';
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q=shuffled[qIdx];
+  document.getElementById('q-question').textContent=q.q;
+  document.getElementById('q-score').textContent=`Score: ${qScore} / ${qIdx}`;
+  document.getElementById('q-progress').textContent=`Question ${qIdx+1} of ${shuffled.length}`;
+  document.getElementById('q-bar').style.width=((qIdx/shuffled.length)*100)+'%';
+  const opts=document.getElementById('q-options');
+  opts.innerHTML='';
+  q.opts.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='quiz-option'; btn.textContent=opt;
+    btn.onclick=()=>selectAnswer(i);
+    opts.appendChild(btn);
+  });
+  document.getElementById('q-explanation').classList.remove('show');
+  document.getElementById('q-next').disabled=true;
+  answered=false;
+}
+
+function selectAnswer(i){
+  if(answered)return;
+  answered=true;
+  const q=shuffled[qIdx];
+  const btns=document.querySelectorAll('.quiz-option');
+  btns.forEach(b=>b.disabled=true);
+  btns[i].classList.add(i===q.ans?'correct':'wrong');
+  if(i!==q.ans)btns[q.ans].classList.add('correct');
+  if(i===q.ans)qScore++;
+  const exp=document.getElementById('q-explanation');
+  exp.textContent=q.exp; exp.classList.add('show');
+  document.getElementById('q-next').disabled=false;
+  document.getElementById('q-score').textContent=`Score: ${qScore} / ${qIdx+1}`;
+}
+
+function nextQuestion(){
+  qIdx++;
+  if(qIdx>=shuffled.length)showFinal();
+  else renderQuestion();
+}
+
+function showFinal(){
+  document.getElementById('quiz-active').style.display='none';
+  const pct=Math.round((qScore/shuffled.length)*100);
+  document.getElementById('final-score').textContent=`${qScore} / ${shuffled.length}`;
+  const msgs=[
+    [0,49,"Work through each section carefully and then retake. These strategies are learnable and the return on investment is enormous."],
+    [50,69,"Good start. Review the sections where you missed questions and think about which strategies you are not yet using in your own studying."],
+    [70,84,"Strong understanding. The next step is applying these strategies consistently, not just knowing them. Pick one new habit to implement this week."],
+    [85,100,"Excellent. You understand the research and the methods. The only thing left is doing them, consistently, starting now."]
+  ];
+  document.getElementById('final-msg').textContent=msgs.find(m=>pct>=m[0]&&pct<=m[1])[2];
+  document.getElementById('quiz-final').classList.add('show');
+}
+
+const cards=[
+  {cat:'Active Reading',front:'What does SQ3R stand for?',back:'Survey, Question, Read, Recite, Review\n\nA five-step active reading method with strong research support for comprehension and retention.'},
+  {cat:'Active Reading',front:'What happens during the Survey step?',back:'Spend 3-5 minutes previewing the entire chapter before reading a word of content.\n\nRead headings, figures, captions, bold terms, summary, and end-of-chapter questions.'},
+  {cat:'Active Reading',front:'What does the Recite step require?',back:'Close the book and answer your question from memory, in your own words.\n\nThis is retrieval practice. If you cannot answer without looking, you have not learned it yet.'},
+  {cat:'Active Reading',front:'Recognition vs. Recall',back:'Recognition: identifying something when you see it.\nRecall: retrieving it without prompts.\n\nExams test recall. Rereading builds recognition. Only retrieval practice builds recall.'},
+  {cat:'Active Reading',front:'Best way to learn a textbook figure',back:'Cover the figure and redraw it from memory.\n\nThe act of drawing forces active encoding of the structure and logic. More durable than reading or highlighting.'},
+  {cat:'Annotation',front:'Why is passive highlighting ineffective?',back:'It requires no thinking or decision-making.\n\nYou can highlight a sentence you do not understand. Effective annotation requires deciding what matters and writing it in your own words.'},
+  {cat:'Annotation',front:'What to write in the margin after each paragraph',back:'A 2-5 word summary in your own words.\n\n"Enzyme lowers activation energy" is more useful than a yellow stripe when you return to review.'},
+  {cat:'Annotation',front:'What to do when you encounter something confusing',back:'Mark it with a large question mark and keep reading.\n\nFlagging confusion without stopping maintains momentum and context. Return to it after finishing the section.'},
+  {cat:'Annotation',front:'Why note connections between ideas?',back:'Each connection builds a retrieval pathway.\n\nConnected knowledge is more durable and more usable than isolated knowledge. Writing "relates to X" while reading is a powerful learning act.'},
+  {cat:'Note-Taking',front:'Three sections of Cornell Notes',back:'1. Cue column (left, narrow) — questions added after class\n2. Notes column (right, wide) — filled during class\n3. Summary (bottom) — written after review'},
+  {cat:'Note-Taking',front:'When to fill in the Cornell cue column',back:'Within 24 hours of the lecture.\n\nThe questions become a retrieval practice tool. Cover the notes, answer each cue from memory. Anything you cannot answer is what needs more study.'},
+  {cat:'Note-Taking',front:'Best use of concept maps',back:'Topics where relationships between ideas matter more than sequence or hierarchy.\n\nMetabolic pathways, physiological systems, cause-and-effect chains. The labeled arrows on a concept map are the most important part.'},
+  {cat:'Note-Taking',front:'Handwritten vs. typed notes: what does research show?',back:'Handwriting produces better conceptual understanding.\n\nBecause you cannot keep up verbatim, you must listen, understand, and summarize in real time. That processing is the learning.'},
+  {cat:'Lecture Notes',front:'Most important thing to do before a lecture',back:'Survey the corresponding textbook section (15-20 min).\n\nHeadings, figures, bold terms, summary. Encountering concepts for the second time in lecture allows you to focus on understanding rather than keeping up.'},
+  {cat:'Lecture Notes',front:'The 24-hour rule',back:'Review and complete your notes within 24 hours of the lecture.\n\nMemory decay is steepest in the first 24 hours. A short review session the same day far outperforms a longer session a week later.'},
+  {cat:'Lecture Notes',front:'What to do when you fall behind in a lecture',back:'Leave a blank space with a question mark and keep going.\n\nDo not stop to catch up. Fill the gap after class using the textbook, a classmate\'s notes, or office hours.'},
+  {cat:'Lecture Notes',front:'Signals that something is especially important in a lecture',back:'"This is the key point," "This will be on the exam," "Most students find this confusing."\n\nAlso: professor slows down, repeats something, writes on the board. Mark these with a star.'},
+  {cat:'Retention',front:'The spacing effect',back:'Studying the same material across multiple sessions over time produces far better long-term retention than the same time spent in one session.\n\nOne of the most replicated findings in cognitive psychology.'},
+  {cat:'Retention',front:'Why does cramming fail long-term?',back:'It creates short-term familiarity that decays quickly.\n\nThe retrieval and reconstruction process that produces durable memory requires multiple spaced encounters. Cramming provides one intense encounter that fades.'},
+  {cat:'Retention',front:'Retrieval practice (the testing effect)',back:'Testing yourself on material strengthens memory more than restudying it.\n\nThe act of pulling information out of memory consolidates it more effectively than pushing it in through rereading.'},
+  {cat:'Retention',front:'Free recall practice',back:'Close all materials. Write down everything you remember about a topic on a blank page.\n\nUncomfortable because it reveals gaps. That discomfort is exactly what makes it effective.'},
+  {cat:'Retention',front:'Interleaved vs. blocked practice',back:'Blocked: do all of one problem type, then another.\nInterleaved: mix problem types in one session.\n\nInterleaved is harder but produces better retention and transfer. Forces you to identify which method to use, not just execute it.'},
+  {cat:'Retention',front:'Why does "teach it out loud" work?',back:'Explaining a concept requires you to organize your full understanding and fill every gap.\n\nThe places where you stumble identify exactly where your understanding is incomplete.'},
+  {cat:'Retention',front:'When to begin reviewing for a major exam',back:'At least one week before.\n\nThis allows spaced practice and multiple retrieval sessions. Starting 2 days before forces cramming, which produces short-term retention that fades before the next exam.'},
+];
+
+const catNames=['All',...new Set(cards.map(c=>c.cat))];
+let fcCat='All',fcDeck=[],fcIdx=0,fcFlipped=false;
+
+function buildFilters(){
+  const wrap=document.getElementById('fc-filters');
+  wrap.innerHTML='';
+  catNames.forEach(cat=>{
+    const btn=document.createElement('button');
+    btn.className='fc-filter'+(cat===fcCat?' active':'');
+    btn.textContent=cat;
+    btn.onclick=()=>{
+      fcCat=cat;
+      document.querySelectorAll('.fc-filter').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      fcDeck=fcCat==='All'?shuffle(cards):shuffle(cards.filter(c=>c.cat===fcCat));
+      fcIdx=0;fcFlipped=false;renderCard();
+    };
+    wrap.appendChild(btn);
+  });
+  const cnt=document.createElement('div');
+  cnt.className='fc-count';cnt.id='fc-cnt-lbl';
+  wrap.appendChild(cnt);
+}
+
+function renderCard(){
+  if(!fcDeck.length)fcDeck=fcCat==='All'?shuffle(cards):shuffle(cards.filter(c=>c.cat===fcCat));
+  const c=fcDeck[fcIdx];
+  document.getElementById('fc-front-text').textContent=c.front;
+  document.getElementById('fc-back-text').textContent=c.back;
+  document.getElementById('fc-pos').textContent=`${fcIdx+1} / ${fcDeck.length}`;
+  const l=document.getElementById('fc-cnt-lbl');
+  if(l)l.textContent=fcDeck.length+' cards';
+  document.getElementById('fc-card').classList.remove('flipped');
+  fcFlipped=false;
+}
+
+function flipCard(){
+  fcFlipped=!fcFlipped;
+  document.getElementById('fc-card').classList.toggle('flipped',fcFlipped);
+}
+
+function fcNav(dir){
+  fcIdx=(fcIdx+dir+fcDeck.length)%fcDeck.length;
+  fcFlipped=false;renderCard();
+}
+
+fcDeck=shuffle(cards);
+buildFilters();
+</script>
+</body>
+</html>
