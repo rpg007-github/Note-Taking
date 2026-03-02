@@ -112,9 +112,40 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 .disclaimer-inner { padding: 0 1.2rem 1rem; font-size: 0.82rem; color: var(--text-muted); line-height: 1.65; }
 
 .site-footer { text-align: center; padding: 2rem; font-size: 0.85rem; color: var(--text-muted); border-top: 2px solid var(--border); margin-top: 2rem; font-family: var(--serif); font-style: italic; }
+
+/* ─── WCAG 2.1 AA: Visible focus indicators ─── */
+:focus-visible {
+  outline: 3px solid #005fcc !important;
+  outline-offset: 2px !important;
+}
+.tab-btn:focus-visible, .nav-btn:focus-visible {
+  outline: 3px solid #005fcc !important;
+  outline-offset: 2px !important;
+}
+/* ─── Skip link ─── */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 1rem;
+  background: #005fcc;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0 0 6px 6px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  z-index: 9999;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 0;
+}
+
 </style>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
 
 <div class="series-banner">Foundations: Closing the Gap &nbsp;&mdash;&nbsp; <span>Note-Taking and Active Reading</span></div>
 
@@ -124,22 +155,22 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
   <div class="byline">Passive exposure to information is not learning. Learning is what happens when you work with information. This guide shows you how to do that.</div>
 </div>
 
-<nav class="tab-nav">
-  <button class="tab-btn active" data-tab="start">Start Here</button>
-  <button class="tab-btn" data-tab="reading">Active Reading</button>
-  <button class="tab-btn" data-tab="annotation">Annotation</button>
-  <button class="tab-btn" data-tab="notetaking">Note-Taking Systems</button>
-  <button class="tab-btn" data-tab="lecture">Lecture Notes</button>
-  <button class="tab-btn" data-tab="review">Review and Retention</button>
-  <button class="tab-btn" data-tab="practice">Practice</button>
-  <button class="tab-btn" data-tab="sq3r">SQ3R Simulation</button>
-  <button class="tab-btn" data-tab="tools">Study Tools</button>
+<nav class="tab-nav" role="tablist" aria-label="Page sections">
+  <button role="tab" aria-selected="true" aria-controls="panel-start" class="tab-btn active" data-tab="start">Start Here</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-reading" class="tab-btn" data-tab="reading">Active Reading</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-annotation" class="tab-btn" data-tab="annotation">Annotation</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-notetaking" class="tab-btn" data-tab="notetaking">Note-Taking Systems</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-lecture" class="tab-btn" data-tab="lecture">Lecture Notes</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-review" class="tab-btn" data-tab="review">Review and Retention</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-practice" class="tab-btn" data-tab="practice">Practice</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-sq3r" class="tab-btn" data-tab="sq3r">SQ3R Simulation</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-tools" class="tab-btn" data-tab="tools">Study Tools</button>
 </nav>
 
-<div class="container">
+<div class="container" id="main-content" role="main">
 
 <!-- Start Here Tab -->
-<div class="tab-panel active" id="panel-start">
+<div class="tab-panel active" id="panel-start" role="tabpanel" aria-labelledby="btn-start">
   <div class="disclaimer-wrap" id="disc">
     <div class="disclaimer-toggle" onclick="toggleDisc()">
       <span>⚠️ Important Disclaimer</span>
@@ -162,7 +193,7 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 </div>
 
 <!-- Reading Tab -->
-<div class="tab-panel" id="panel-reading">
+<div class="tab-panel" id="panel-reading" role="tabpanel" aria-labelledby="btn-reading">
   <div class="card">
     <h2>Active Reading</h2>
     <p>Reading is not the same as learning. Most students read passively - their eyes move across the page, but their brain doesn't engage. Active reading forces your brain to work with the information.</p>
@@ -170,7 +201,7 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 </div>
 
 <!-- Annotation Tab -->
-<div class="tab-panel" id="panel-annotation">
+<div class="tab-panel" id="panel-annotation" role="tabpanel" aria-labelledby="btn-annotation">
   <div class="card">
     <h2>Annotation</h2>
     <p>Highlighting everything is the same as highlighting nothing. Effective annotation requires making decisions about what matters and why.</p>
@@ -178,7 +209,7 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 </div>
 
 <!-- Note-Taking Tab -->
-<div class="tab-panel" id="panel-notetaking">
+<div class="tab-panel" id="panel-notetaking" role="tabpanel" aria-labelledby="btn-notetaking">
   <div class="card">
     <h2>Note-Taking Systems</h2>
     <p>The Cornell Note-taking system creates a built-in review and self-testing structure. It's not just about organizing information - it's about making that information retrievable later.</p>
@@ -186,7 +217,7 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 </div>
 
 <!-- Lecture Tab -->
-<div class="tab-panel" id="panel-lecture">
+<div class="tab-panel" id="panel-lecture" role="tabpanel" aria-labelledby="btn-lecture">
   <div class="card">
     <h2>Lecture Notes</h2>
     <p>The goal isn't to transcribe everything the professor says. The goal is to capture the ideas in a way that helps you learn and review effectively.</p>
@@ -194,7 +225,7 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 </div>
 
 <!-- Review Tab -->
-<div class="tab-panel" id="panel-review">
+<div class="tab-panel" id="panel-review" role="tabpanel" aria-labelledby="btn-review">
   <div class="card">
     <h2>Review and Retention</h2>
     <p>Spaced repetition and retrieval practice aren't just study techniques - they're how memory actually works. Use them to your advantage.</p>
@@ -202,7 +233,7 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 </div>
 
 <!-- Practice Tab -->
-<div class="tab-panel" id="panel-practice">
+<div class="tab-panel" id="panel-practice" role="tabpanel" aria-labelledby="btn-practice">
   <div class="card">
     <h2>Interactive Practice</h2>
     <p>Learning note-taking is like learning to drive: reading about it helps, but you need to actually practice. These exercises let you try each technique with guided feedback.</p>
@@ -262,7 +293,7 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 </div>
 
 <!-- SQ3R Tab -->
-<div class="tab-panel" id="panel-sq3r">
+<div class="tab-panel" id="panel-sq3r" role="tabpanel" aria-labelledby="btn-sq3r">
   <div class="card">
     <h2>SQ3R Method Simulation</h2>
     <p>Practice the complete SQ3R process: Survey, Question, Read, Recite, Review. You'll work through each step with a real textbook section.</p>
@@ -282,7 +313,7 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 </div>
 
 <!-- Study Tools Tab -->
-<div class="tab-panel" id="panel-tools">
+<div class="tab-panel" id="panel-tools" role="tabpanel" aria-labelledby="btn-tools">
   <div class="card">
     <h2>Interactive Study Tools</h2>
     <p>Practical tools to implement the techniques you've learned.</p>
