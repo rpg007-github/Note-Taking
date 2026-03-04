@@ -34,6 +34,28 @@
 html { scroll-behavior: smooth; font-size: 17px; }
 body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.72; }
 
+/* ─── Skip link ─── */
+.skip-link {
+  position: absolute; top: -100px; left: 1rem;
+  background: #005fcc; color: #fff;
+  padding: 0.6rem 1.2rem; border-radius: 0 0 6px 6px;
+  font-weight: 700; font-size: 0.95rem; text-decoration: none;
+  z-index: 9999; transition: top 0.2s;
+}
+.skip-link:focus { top: 0; }
+
+/* ─── Screen-reader only ─── */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* ─── WCAG 2.1 AA: Visible focus indicators ─── */
+:focus-visible {
+  outline: 3px solid #005fcc !important;
+  outline-offset: 2px !important;
+}
+
 .series-banner {
   background: var(--accent-dark);
   color: rgba(255,255,255,0.85);
@@ -71,33 +93,37 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
   background: var(--warm); color: var(--text-muted); cursor: pointer; transition: all 0.25s ease; white-space: nowrap;
 }
 .tab-btn:hover { border-color: var(--theme); color: var(--theme); }
-.tab-btn.active { background: var(--theme); color: white; border-color: var(--theme); }
+.tab-btn.active, .tab-btn[aria-selected="true"] { background: var(--theme); color: white; border-color: var(--theme); }
 
 .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
 .tab-panel { display: none; animation: fadeUp 0.4s ease; }
 .tab-panel.active { display: block; }
 @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
 
-.card { 
-  background: var(--card-bg); 
-  border: 1px solid var(--border); 
-  border-radius: var(--radius); 
-  padding: 2rem; 
-  margin-bottom: 1.5rem; 
-  box-shadow: var(--shadow); 
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow);
 }
 .card h2 { font-family: var(--serif); font-size: 1.65rem; font-weight: 700; color: var(--theme-dark); margin-bottom: 1rem; }
+.card h3 { font-family: var(--serif); font-size: 1.25rem; font-weight: 700; color: var(--theme-dark); margin: 1.2rem 0 0.6rem; }
+.card p { margin-bottom: 0.85rem; }
+.card ul, .card ol { margin: 0.5rem 0 1rem 1.5rem; }
+.card li { margin-bottom: 0.4rem; }
 
-.quiz-btn { 
-  background: var(--theme); 
-  color: white; 
-  border: none; 
-  padding: 0.65rem 1.5rem; 
-  border-radius: 8px; 
-  font-family: var(--sans); 
-  font-size: 0.95rem; 
-  font-weight: 600; 
-  cursor: pointer; 
+.quiz-btn {
+  background: var(--theme);
+  color: white;
+  border: none;
+  padding: 0.65rem 1.5rem;
+  border-radius: 8px;
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
   transition: filter 0.2s;
   margin: 0.25rem;
 }
@@ -111,72 +137,223 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 .disclaimer-wrap.open .disclaimer-body { max-height: 400px; }
 .disclaimer-inner { padding: 0 1.2rem 1rem; font-size: 0.82rem; color: var(--text-muted); line-height: 1.65; }
 
+/* ─── Cornell Notes Layout ─── */
+.cornell-grid {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  grid-template-rows: auto auto;
+  gap: 0;
+  border: 2px solid var(--theme);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 1rem 0;
+  font-size: 0.92rem;
+}
+.cornell-topic {
+  grid-column: 1 / -1;
+  background: var(--theme);
+  color: white;
+  padding: 0.6rem 1rem;
+  font-weight: 700;
+  font-family: var(--serif);
+  font-size: 1rem;
+}
+.cornell-cue {
+  background: var(--theme-light);
+  border-right: 2px solid var(--theme);
+  padding: 1rem;
+}
+.cornell-cue h4 { color: var(--theme-dark); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+.cornell-notes {
+  background: white;
+  padding: 1rem;
+}
+.cornell-notes h4 { color: var(--theme-dark); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+.cornell-summary {
+  grid-column: 1 / -1;
+  background: #FFF8E7;
+  border-top: 2px solid var(--theme);
+  padding: 1rem;
+}
+.cornell-summary h4 { color: var(--theme-dark); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+
+/* ─── Worked Example boxes ─── */
+.worked-example {
+  background: linear-gradient(135deg, #f0f9f0, #e8f5e8);
+  border: 2px solid var(--theme);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin: 1.2rem 0;
+  position: relative;
+}
+.worked-example::before {
+  content: "Worked Example";
+  position: absolute;
+  top: -1px;
+  left: 1rem;
+  background: var(--theme);
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.7rem;
+  border-radius: 0 0 6px 6px;
+  font-family: var(--mono);
+}
+.worked-example h4 {
+  margin-top: 0.8rem;
+  color: var(--theme-dark);
+  font-family: var(--serif);
+  font-size: 1.1rem;
+}
+.step-box {
+  background: white;
+  border-left: 4px solid var(--theme);
+  border-radius: 0 6px 6px 0;
+  padding: 0.8rem 1rem;
+  margin: 0.6rem 0;
+}
+.step-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--theme);
+  margin-bottom: 0.3rem;
+  font-family: var(--mono);
+}
+
+/* ─── Flashcard styles ─── */
+.flashcard-container { perspective: 1000px; margin: 1rem auto; max-width: 500px; }
+.flashcard {
+  width: 100%; height: 180px;
+  position: relative; cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
+  border-radius: var(--radius);
+}
+.flashcard.flipped { transform: rotateY(180deg); }
+.flashcard-front, .flashcard-back {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+  border-radius: var(--radius);
+  display: flex; align-items: center; justify-content: center;
+  padding: 1.5rem; text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+.flashcard-front { background: var(--theme); color: white; font-size: 1.1rem; font-weight: 600; }
+.flashcard-back { background: white; border: 2px solid var(--theme); color: var(--text); transform: rotateY(180deg); font-size: 0.98rem; }
+.flashcard-hint { text-align: center; margin: 0.5rem 0 1rem; font-size: 0.82rem; color: var(--text-muted); }
+.flashcard-nav { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem; }
+
+/* ─── Quiz styles ─── */
+.quiz-option {
+  display: block; width: 100%; text-align: left;
+  padding: 0.75rem 1rem; margin: 0.4rem 0;
+  background: var(--warm); border: 2px solid var(--border);
+  border-radius: 8px; cursor: pointer; font-family: var(--sans);
+  font-size: 0.95rem; transition: all 0.2s;
+}
+.quiz-option:hover { border-color: var(--theme); background: var(--theme-light); }
+.quiz-option.correct { background: #d4edda; border-color: #28a745; color: #155724; }
+.quiz-option.incorrect { background: #f8d7da; border-color: #dc3545; color: #721c24; }
+.quiz-feedback { margin-top: 1rem; padding: 1rem; border-radius: 8px; font-weight: 600; display: none; }
+.quiz-feedback.show { display: block; }
+.quiz-feedback.correct { background: #d4edda; color: #155724; border: 1px solid #28a745; }
+.quiz-feedback.incorrect { background: #f8d7da; color: #721c24; border: 1px solid #dc3545; }
+
+/* ─── Progress bar ─── */
+.progress-bar-wrap { background: var(--border); border-radius: 99px; height: 8px; margin: 0.5rem 0 1rem; }
+.progress-bar-fill { background: var(--theme); height: 8px; border-radius: 99px; transition: width 0.4s; }
+
+/* ─── Score display ─── */
+.score-display {
+  background: var(--theme-light);
+  border: 2px solid var(--theme);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  text-align: center;
+  display: none;
+  margin-top: 1rem;
+}
+.score-display .score-number { font-size: 3rem; font-weight: 700; color: var(--theme); font-family: var(--mono); }
+
 .site-footer { text-align: center; padding: 2rem; font-size: 0.85rem; color: var(--text-muted); border-top: 2px solid var(--border); margin-top: 2rem; font-family: var(--serif); font-style: italic; }
 
-/* ─── WCAG 2.1 AA: Visible focus indicators ─── */
-:focus-visible {
-  outline: 3px solid #005fcc !important;
-  outline-offset: 2px !important;
-}
-.tab-btn:focus-visible, .nav-btn:focus-visible {
-  outline: 3px solid #005fcc !important;
-  outline-offset: 2px !important;
-}
-/* ─── Skip link ─── */
-.skip-link {
-  position: absolute;
-  top: -100px;
-  left: 1rem;
-  background: #005fcc;
-  color: #fff;
-  padding: 0.6rem 1.2rem;
-  border-radius: 0 0 6px 6px;
-  font-weight: 700;
-  font-size: 0.95rem;
-  text-decoration: none;
-  z-index: 9999;
-  transition: top 0.2s;
-}
-.skip-link:focus {
-  top: 0;
-}
+/* ─── Table styles ─── */
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+th, td { padding: 0.75rem 1rem; border: 1px solid var(--border); text-align: left; }
+th { background: var(--theme-light); color: var(--theme-dark); font-weight: 700; }
+tr:nth-child(even) td { background: var(--warm); }
 
+/* SQ3R steps */
+.sq3r-step {
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+.sq3r-step-header {
+  background: var(--theme);
+  color: white;
+  padding: 0.75rem 1.25rem;
+  font-weight: 700;
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.sq3r-step-body { padding: 1rem 1.25rem; }
+.sq3r-letter {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 2rem; height: 2rem; border-radius: 50%;
+  background: rgba(255,255,255,0.25); font-weight: 900; font-family: var(--mono);
+  flex-shrink: 0;
+}
 </style>
 </head>
 <body>
 <a href="#main-content" class="skip-link">Skip to main content</a>
 
+<!-- Live announce region for screen readers -->
+<div id="live-announce" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
 <div class="series-banner">Foundations: Closing the Gap &nbsp;&mdash;&nbsp; <span>Note-Taking and Active Reading</span></div>
 
 <div class="hero">
   <h1>Note-Taking and Active Reading</h1>
-  <div class="subtitle">The skills your K-12 teachers assumed someone else had taught you. Nobody did. Here they are, explained from the beginning, with the research behind why they work.</div>
+  <div class="subtitle">The skills your teachers assumed someone else had taught you. Nobody did. Here they are, explained from the beginning, with the research behind why they work.</div>
   <div class="byline">Passive exposure to information is not learning. Learning is what happens when you work with information. This guide shows you how to do that.</div>
 </div>
 
 <nav class="tab-nav" role="tablist" aria-label="Page sections">
-  <button role="tab" aria-selected="true" aria-controls="panel-start" class="tab-btn active" data-tab="start">Start Here</button>
-  <button role="tab" aria-selected="false" aria-controls="panel-reading" class="tab-btn" data-tab="reading">Active Reading</button>
-  <button role="tab" aria-selected="false" aria-controls="panel-annotation" class="tab-btn" data-tab="annotation">Annotation</button>
-  <button role="tab" aria-selected="false" aria-controls="panel-notetaking" class="tab-btn" data-tab="notetaking">Note-Taking Systems</button>
-  <button role="tab" aria-selected="false" aria-controls="panel-lecture" class="tab-btn" data-tab="lecture">Lecture Notes</button>
-  <button role="tab" aria-selected="false" aria-controls="panel-review" class="tab-btn" data-tab="review">Review and Retention</button>
-  <button role="tab" aria-selected="false" aria-controls="panel-practice" class="tab-btn" data-tab="practice">Practice</button>
-  <button role="tab" aria-selected="false" aria-controls="panel-sq3r" class="tab-btn" data-tab="sq3r">SQ3R Simulation</button>
-  <button role="tab" aria-selected="false" aria-controls="panel-tools" class="tab-btn" data-tab="tools">Study Tools</button>
+  <button role="tab" aria-selected="true" aria-controls="panel-start" id="btn-start" class="tab-btn active" data-tab="start">Start Here</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-reading" id="btn-reading" class="tab-btn" data-tab="reading">Active Reading</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-annotation" id="btn-annotation" class="tab-btn" data-tab="annotation">Annotation</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-notetaking" id="btn-notetaking" class="tab-btn" data-tab="notetaking">Note-Taking Systems</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-lecture" id="btn-lecture" class="tab-btn" data-tab="lecture">Lecture Notes</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-review" id="btn-review" class="tab-btn" data-tab="review">Review and Retention</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-practice" id="btn-practice" class="tab-btn" data-tab="practice">Practice</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-sq3r" id="btn-sq3r" class="tab-btn" data-tab="sq3r">SQ3R Simulation</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-flashcards" id="btn-flashcards" class="tab-btn" data-tab="flashcards">Flashcards</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-quiz" id="btn-quiz" class="tab-btn" data-tab="quiz">Quiz</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-tools" id="btn-tools" class="tab-btn" data-tab="tools">Study Tools</button>
 </nav>
 
 <div class="container" id="main-content" role="main">
 
-<!-- Start Here Tab -->
-<div class="tab-panel active" id="panel-start" role="tabpanel" aria-labelledby="btn-start">
+<!-- ═══════════════════════════════════════════════
+     START HERE TAB
+═══════════════════════════════════════════════ -->
+<section class="tab-panel active" id="panel-start" role="tabpanel" aria-labelledby="btn-start">
   <div class="disclaimer-wrap" id="disc">
-    <div class="disclaimer-toggle" onclick="toggleDisc()">
-      <span><span aria-hidden="true">⚠️</span> Important Disclaimer</span>
-      <span class="darrow"><span aria-hidden="true">▼</span></span>
+    <div class="disclaimer-toggle" onclick="toggleDisc()" aria-expanded="false" aria-controls="disc-body">
+      <span><span aria-hidden="true">&#9888;&#65039;</span> Important Disclaimer</span>
+      <span class="darrow" aria-hidden="true">&#9660;</span>
     </div>
-    <div class="disclaimer-body">
+    <div class="disclaimer-body" id="disc-body">
       <div class="disclaimer-inner">
         <p>This guide is provided as a supplemental study resource. Always verify techniques against your instructor's expectations and your course requirements.</p>
         <p>These are evidence-based strategies, but individual learning styles vary. Use what works for you and adapt techniques to fit your specific courses and study needs.</p>
@@ -186,54 +363,402 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 
   <div class="card">
     <h2>What Nobody Taught You About Learning</h2>
-    <p>Most students reach college having never been explicitly taught how to take notes, read actively, or study effectively. K-12 teachers assumed someone else covered it. College professors assume you already know. This guide fills that gap.</p>
+    <p>Most students reach college having never been explicitly taught how to take notes, read actively, or study effectively. High school teachers assumed someone else covered it. College professors assume you already know. This guide fills that gap.</p>
+    <p>The honest truth: the students who do well in college are usually not smarter than you. They just know <em>how</em> to study. These are learnable skills, not personality traits.</p>
     <p><strong>What you'll find here:</strong> Research-backed strategies for note-taking, active reading, and retention, plus interactive practice exercises to build these skills.</p>
-    <p><strong>Start with the Practice tab</strong> to immediately try the techniques, or work through the content tabs first to understand the theory behind each method.</p>
+    <p><strong>Where to start:</strong> Use the tabs above to navigate. If you want to jump straight in, try <em>Practice</em> or <em>Flashcards</em>. If you want to understand why these methods work, start with <em>Active Reading</em> and work forward.</p>
   </div>
-</div>
 
-<!-- Reading Tab -->
-<div class="tab-panel" id="panel-reading" role="tabpanel" aria-labelledby="btn-reading">
+  <div class="card">
+    <h2>Why Passive Reading Doesn't Work</h2>
+    <p>Here's a scenario almost every student recognizes: you read an entire chapter, close the book, and realize you can't remember what you just read. This isn't a memory problem. It's a strategy problem.</p>
+    <p>The brain does not store information simply because your eyes moved over it. Memory requires <strong>active processing</strong>: making connections, asking questions, retrieving information, and revisiting it over time. This guide teaches you how to do all of those things.</p>
+
+    <div class="worked-example">
+      <h4>Why Highlighting Everything Fails</h4>
+      <p>Imagine a student reads this sentence and highlights it:</p>
+      <blockquote style="background: #fffbe6; border-left: 4px solid #f0c030; padding: 0.75rem 1rem; margin: 0.75rem 0; border-radius: 0 6px 6px 0; font-style: italic;">"The mitochondria is called the powerhouse of the cell because it produces ATP through cellular respiration."</blockquote>
+      <div class="step-box">
+        <div class="step-label">What the student thinks happened</div>
+        <p>I read it and highlighted it, so I'll remember it for the exam.</p>
+      </div>
+      <div class="step-box">
+        <div class="step-label">What actually happened</div>
+        <p>The student's eyes processed the sentence. The brain flagged it as "seen." No active processing occurred. Two days later, most of it is gone.</p>
+      </div>
+      <div class="step-box">
+        <div class="step-label">What works instead</div>
+        <p>Close the book. Write from memory: <em>"Mitochondria &rarr; makes ATP &rarr; cellular respiration &rarr; called the powerhouse because..."</em> Now your brain has actually worked with the information.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     ACTIVE READING TAB
+═══════════════════════════════════════════════ -->
+<section class="tab-panel" id="panel-reading" role="tabpanel" aria-labelledby="btn-reading">
   <div class="card">
     <h2>Active Reading</h2>
-    <p>Reading is not the same as learning. Most students read passively - their eyes move across the page, but their brain doesn't engage. Active reading forces your brain to work with the information.</p>
-  </div>
-</div>
+    <p>Reading is not the same as learning. Most students read passively &mdash; their eyes move across the page, but their brain doesn't engage. Active reading forces your brain to work with the information.</p>
+    <p>The difference between active and passive reading is the difference between watching someone else play a sport and actually playing it yourself. Both involve the sport. Only one builds the skill.</p>
 
-<!-- Annotation Tab -->
-<div class="tab-panel" id="panel-annotation" role="tabpanel" aria-labelledby="btn-annotation">
+    <h3>The Four Habits of Active Readers</h3>
+    <ol>
+      <li><strong>Preview before reading.</strong> Scan headings, figures, and the summary first. This gives your brain a framework to attach new information to.</li>
+      <li><strong>Ask questions as you read.</strong> Turn headings into questions. "The Causes of WWI" becomes "What were the causes of WWI?" Now you're reading with a purpose.</li>
+      <li><strong>Pause and recall.</strong> After each paragraph or section, look away and say what you just read. In your own words. Not the author's.</li>
+      <li><strong>Connect new to known.</strong> Ask yourself: "How does this relate to something I already understand?" Connections are how memory works.</li>
+    </ol>
+
+    <div class="worked-example">
+      <h4>Active vs. Passive: Side by Side</h4>
+      <table>
+        <caption class="sr-only">Comparison of passive and active reading behaviors</caption>
+        <thead>
+          <tr>
+            <th scope="col">Passive Reader</th>
+            <th scope="col">Active Reader</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Reads top to bottom, start to finish</td>
+            <td>Previews headings and summaries first</td>
+          </tr>
+          <tr>
+            <td>Highlights sentences that "seem important"</td>
+            <td>Writes questions in the margin, then reads to answer them</td>
+          </tr>
+          <tr>
+            <td>Continues reading even when confused</td>
+            <td>Stops when confused, re-reads, or looks up the term</td>
+          </tr>
+          <tr>
+            <td>Finishes the chapter and moves on</td>
+            <td>Closes the book and writes a brief summary from memory</td>
+          </tr>
+          <tr>
+            <td>Reviews by re-reading highlighted text</td>
+            <td>Reviews by trying to recall without looking</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="worked-example">
+      <h4>Applying Active Reading to a Textbook Section</h4>
+      <p><strong>The section heading is:</strong> "Factors Affecting Enzyme Activity"</p>
+      <div class="step-box">
+        <div class="step-label">Step 1: Preview</div>
+        <p>Before reading: scan the heading, any bold terms, and figures. You notice the terms temperature, pH, and substrate concentration appear in bold. You already have a mental map.</p>
+      </div>
+      <div class="step-box">
+        <div class="step-label">Step 2: Question</div>
+        <p>You write in your margin: <em>"What factors affect enzyme activity, and how does each one affect it?"</em></p>
+      </div>
+      <div class="step-box">
+        <div class="step-label">Step 3: Read to answer</div>
+        <p>Now you're not just reading &mdash; you're searching. Your brain is actively looking for the answer.</p>
+      </div>
+      <div class="step-box">
+        <div class="step-label">Step 4: Recall (the most important step)</div>
+        <p>You look away and say out loud or write: <em>"Temperature affects enzyme shape &mdash; too hot denatures it. pH can also change shape. Higher substrate concentration increases reaction rate up to a point, then it maxes out."</em></p>
+      </div>
+      <div class="step-box">
+        <div class="step-label">Step 5: Review</div>
+        <p>You check what you said against the text. What did you miss? What was wrong? That's what you actually need to study.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     ANNOTATION TAB
+═══════════════════════════════════════════════ -->
+<section class="tab-panel" id="panel-annotation" role="tabpanel" aria-labelledby="btn-annotation">
   <div class="card">
     <h2>Annotation</h2>
-    <p>Highlighting everything is the same as highlighting nothing. Effective annotation requires making decisions about what matters and why.</p>
-  </div>
-</div>
+    <p>Highlighting everything is the same as highlighting nothing. Effective annotation requires making decisions about what matters and why. That decision-making process is itself a form of active learning.</p>
 
-<!-- Note-Taking Tab -->
-<div class="tab-panel" id="panel-notetaking" role="tabpanel" aria-labelledby="btn-notetaking">
+    <h3>What Annotations Should Do</h3>
+    <p>Annotations are not decorations. They are a conversation you have with the text. Each mark should have a purpose: flagging a key idea, recording a question, summarizing in your own words, or connecting to something else.</p>
+
+    <h3>A Simple Annotation System</h3>
+    <table>
+      <caption class="sr-only">Annotation symbols and their meanings</caption>
+      <thead>
+        <tr>
+          <th scope="col">Symbol</th>
+          <th scope="col">Meaning</th>
+          <th scope="col">When to use</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-size: 1.2rem; text-align: center;">&#10003;</td>
+          <td>Understood / confirmed</td>
+          <td>When something clicks or matches what you already knew</td>
+        </tr>
+        <tr>
+          <td style="font-size: 1.2rem; text-align: center;">?</td>
+          <td>Confused / need to revisit</td>
+          <td>When you don't fully understand something</td>
+        </tr>
+        <tr>
+          <td style="font-size: 1.2rem; text-align: center;">!</td>
+          <td>Surprising / important</td>
+          <td>When something is unexpected or emphasized in class</td>
+        </tr>
+        <tr>
+          <td style="font-size: 1.2rem; text-align: center;">&#9733;</td>
+          <td>Likely to be tested</td>
+          <td>When a concept is central or the professor emphasized it</td>
+        </tr>
+        <tr>
+          <td style="font-size: 1.2rem; text-align: center;">&#8594;</td>
+          <td>Leads to / causes</td>
+          <td>For cause-and-effect relationships</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="worked-example">
+      <h4>Before and After: Turning Passive Highlighting into Active Annotation</h4>
+      <p><strong>Original text:</strong></p>
+      <blockquote style="background: #f5f5f5; border-left: 4px solid #ccc; padding: 0.75rem 1rem; margin: 0.75rem 0; border-radius: 0 6px 6px 0;">
+        "Osmosis is the movement of water across a semipermeable membrane from a region of low solute concentration to a region of high solute concentration. This process does not require energy and is therefore considered passive transport."
+      </blockquote>
+      <div class="step-box">
+        <div class="step-label">Passive approach (ineffective)</div>
+        <p>Student highlights the entire paragraph in yellow. Done.</p>
+      </div>
+      <div class="step-box">
+        <div class="step-label">Active annotation (effective)</div>
+        <p>Student underlines "low solute to high solute" and writes in margin: <em>"&#8592; water goes TO where there's more dissolved stuff"</em><br>
+        Circles "passive transport" and writes: <em>"no ATP needed &mdash; like diffusion"</em><br>
+        Puts a &#9733; next to the definition. Writes: <em>"This will be on the exam."</em></p>
+      </div>
+      <p style="margin-top: 0.75rem; color: var(--theme-dark);"><strong>The difference:</strong> The active annotator made decisions. Each mark required thinking. The passive highlighter just moved their hand.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     NOTE-TAKING SYSTEMS TAB
+═══════════════════════════════════════════════ -->
+<section class="tab-panel" id="panel-notetaking" role="tabpanel" aria-labelledby="btn-notetaking">
   <div class="card">
     <h2>Note-Taking Systems</h2>
-    <p>The Cornell Note-taking system creates a built-in review and self-testing structure. It's not just about organizing information - it's about making that information retrievable later.</p>
-  </div>
-</div>
+    <p>The best note-taking system is the one you'll actually use consistently. That said, some systems are backed by strong evidence. Cornell is the most widely studied, and it works because it builds review and self-testing directly into the structure of your notes.</p>
 
-<!-- Lecture Tab -->
-<div class="tab-panel" id="panel-lecture" role="tabpanel" aria-labelledby="btn-lecture">
+    <h3>The Cornell System</h3>
+    <p>Cornell notes divide your page into three regions: a narrow cue column on the left, a wide notes column on the right, and a summary section at the bottom. The layout forces you to revisit your notes twice &mdash; once to write the cues, and once to write the summary.</p>
+
+    <div class="worked-example">
+      <h4>Cornell Notes: Fully Worked Example</h4>
+      <p><strong>Scenario:</strong> You're in a biology lecture on the cell membrane. Here's what a finished Cornell page looks like after applying all three steps.</p>
+
+      <div class="cornell-grid" role="table" aria-label="Cornell notes example">
+        <div class="cornell-topic" role="rowgroup">Topic: Cell Membrane Structure &nbsp;|&nbsp; Date: Week 4 &nbsp;|&nbsp; Source: Biology Lecture</div>
+        <div class="cornell-cue" role="rowgroup">
+          <h4>Cue Column</h4>
+          <p><em>(Written AFTER class &mdash; these are your study questions)</em></p>
+          <p style="margin-top: 0.8rem;"><strong>What is the fluid mosaic model?</strong></p>
+          <p style="margin-top: 0.6rem;"><strong>What are phospholipids made of?</strong></p>
+          <p style="margin-top: 0.6rem;"><strong>What 3 things does the membrane control?</strong></p>
+          <p style="margin-top: 0.6rem;"><strong>What does "selectively permeable" mean?</strong></p>
+        </div>
+        <div class="cornell-notes" role="rowgroup">
+          <h4>Notes Column</h4>
+          <p><em>(Written DURING class &mdash; your words, not the professor's)</em></p>
+          <ul style="margin-top: 0.8rem; padding-left: 1.2rem;">
+            <li>Cell membrane = fluid mosaic model &mdash; flexible, not rigid</li>
+            <li>Phospholipid bilayer: 2 layers, heads face out (water-loving), tails face in (water-fearing)</li>
+            <li>Proteins embedded throughout &mdash; some move, some stay put</li>
+            <li>Cholesterol between phospholipids &rarr; keeps membrane from being too stiff or too fluid</li>
+            <li>Controls: what enters, what exits, cell communication</li>
+            <li>Selectively permeable = only lets SOME things through</li>
+          </ul>
+        </div>
+        <div class="cornell-summary" role="rowgroup">
+          <h4>Summary Section</h4>
+          <p><em>(Written AFTER class &mdash; 2-3 sentences in your own words)</em></p>
+          <p>The cell membrane is a flexible, two-layered structure made of phospholipids and proteins. It is selectively permeable, meaning it controls what enters and exits the cell. Cholesterol helps maintain the right level of flexibility.</p>
+        </div>
+      </div>
+
+      <div class="step-box" style="margin-top: 1rem;">
+        <div class="step-label">How to use Cornell notes for studying</div>
+        <p>Cover the notes column with a piece of paper. Read each cue question. Try to answer it from memory. Uncover and check. Anything you missed &mdash; that's what to study more.</p>
+      </div>
+    </div>
+
+    <h3>Choosing a System</h3>
+    <table>
+      <caption class="sr-only">Comparison of note-taking systems</caption>
+      <thead>
+        <tr>
+          <th scope="col">System</th>
+          <th scope="col">Best for</th>
+          <th scope="col">Key feature</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Cornell</strong></td>
+          <td>Lectures, textbooks</td>
+          <td>Built-in self-testing with cue column</td>
+        </tr>
+        <tr>
+          <td><strong>Outline</strong></td>
+          <td>Structured content, hierarchical topics</td>
+          <td>Easy to see main vs. sub-points</td>
+        </tr>
+        <tr>
+          <td><strong>Mind Map</strong></td>
+          <td>Brainstorming, connecting concepts</td>
+          <td>Visual; shows relationships</td>
+        </tr>
+        <tr>
+          <td><strong>Charting</strong></td>
+          <td>Comparing similar items</td>
+          <td>Fast to scan; good for compare/contrast</td>
+        </tr>
+        <tr>
+          <td><strong>Sentence</strong></td>
+          <td>Fast-paced lectures</td>
+          <td>Write every new thought on a new line</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     LECTURE NOTES TAB
+═══════════════════════════════════════════════ -->
+<section class="tab-panel" id="panel-lecture" role="tabpanel" aria-labelledby="btn-lecture">
   <div class="card">
     <h2>Lecture Notes</h2>
     <p>The goal isn't to transcribe everything the professor says. The goal is to capture the ideas in a way that helps you learn and review effectively.</p>
-  </div>
-</div>
+    <p>Professors speak about 125&ndash;150 words per minute. You can write about 25 words per minute. If you try to copy everything, you'll fall behind and catch nothing. Instead, listen for the idea, pause, then write it in your own words.</p>
 
-<!-- Review Tab -->
-<div class="tab-panel" id="panel-review" role="tabpanel" aria-labelledby="btn-review">
+    <h3>Signals That Something Is Important</h3>
+    <ul>
+      <li>"This is important" / "Remember this"</li>
+      <li>Something written on the board or in slides</li>
+      <li>Something repeated more than once</li>
+      <li>A term that gets defined explicitly</li>
+      <li>A list of numbered items ("there are three reasons...")</li>
+      <li>Anything the professor pauses before or after saying</li>
+    </ul>
+
+    <div class="worked-example">
+      <h4>From Lecture to Cornell Notes: Full Walkthrough</h4>
+      <p><strong>What the professor said:</strong></p>
+      <blockquote style="background: var(--warm); border-left: 4px solid var(--theme); padding: 0.75rem 1rem; margin: 0.75rem 0; border-radius: 0 6px 6px 0; font-style: italic;">
+        "OK so the central dogma of molecular biology &mdash; and you definitely need to know this &mdash; describes the flow of genetic information. DNA is transcribed into RNA, and RNA is translated into protein. This is a one-way flow. You don't go from protein back to DNA. There are some exceptions we'll cover later, like retroviruses, but for now, the rule is DNA to RNA to protein."
+      </blockquote>
+      <div class="step-box">
+        <div class="step-label">What a bad note-taker writes</div>
+        <p>The central dogma of molecular biology describes the flow of genetic information. DNA is transcribed into RNA and RNA is translated into protein.</p>
+        <p style="color: var(--text-muted); font-size: 0.88rem;">Problem: Just copied words. No emphasis on what matters. No indication it's important.</p>
+      </div>
+      <div class="step-box">
+        <div class="step-label">What a good note-taker writes</div>
+        <p><strong>&#9733; Central Dogma [EXAM]</strong><br>
+        DNA &#8594; RNA &#8594; Protein (one-way only)<br>
+        Transcription: DNA &#8594; RNA<br>
+        Translation: RNA &#8594; Protein<br>
+        Exception: retroviruses (reverse direction &mdash; coming later)</p>
+        <p style="color: var(--text-muted); font-size: 0.88rem;">Notice: flagged as important, uses arrows to show direction, abbreviates intelligently, notes the exception for later.</p>
+      </div>
+      <div class="step-box">
+        <div class="step-label">After class: Add the cue question</div>
+        <p>In the cue column: <em>"What is the central dogma? What are the two steps and their directions?"</em></p>
+      </div>
+    </div>
+
+    <h3>The 24-Hour Rule</h3>
+    <p>Review and reorganize your notes within 24 hours of class. Research shows memory consolidation is strongest immediately after learning. Students who review notes the same day retain significantly more than those who wait until the night before an exam.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     REVIEW AND RETENTION TAB
+═══════════════════════════════════════════════ -->
+<section class="tab-panel" id="panel-review" role="tabpanel" aria-labelledby="btn-review">
   <div class="card">
     <h2>Review and Retention</h2>
-    <p>Spaced repetition and retrieval practice aren't just study techniques - they're how memory actually works. Use them to your advantage.</p>
-  </div>
-</div>
+    <p>Spaced repetition and retrieval practice aren't just study techniques &mdash; they're how memory actually works. Use them to your advantage.</p>
 
-<!-- Practice Tab -->
-<div class="tab-panel" id="panel-practice" role="tabpanel" aria-labelledby="btn-practice">
+    <h3>Two Strategies with the Strongest Evidence</h3>
+    <p><strong>Retrieval Practice:</strong> Trying to remember information without looking at your notes is more effective for long-term retention than re-reading. Every time you successfully retrieve a memory, it becomes stronger and easier to retrieve in the future. This is the science behind flashcards and self-quizzing.</p>
+    <p><strong>Spaced Repetition:</strong> Studying something once for four hours is less effective than studying it four times for one hour each, spread over several days. The forgetting curve shows that memory drops sharply after learning; revisiting material at increasing intervals rebuilds and strengthens it each time.</p>
+
+    <div class="worked-example">
+      <h4>Building a Spaced Repetition Schedule</h4>
+      <p><strong>Scenario:</strong> You learn 30 vocabulary terms on Monday for a quiz on Friday.</p>
+      <table>
+        <caption class="sr-only">Sample spaced repetition study schedule</caption>
+        <thead>
+          <tr>
+            <th scope="col">Day</th>
+            <th scope="col">What to do</th>
+            <th scope="col">Time needed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Monday (same day)</td>
+            <td>Review all 30 terms. Write each from memory once.</td>
+            <td>~20 min</td>
+          </tr>
+          <tr>
+            <td>Tuesday (1 day later)</td>
+            <td>Self-test all 30. Mark which ones you missed.</td>
+            <td>~15 min</td>
+          </tr>
+          <tr>
+            <td>Wednesday (2 days later)</td>
+            <td>Focus only on the ones you missed. Also spot-check the easy ones.</td>
+            <td>~10 min</td>
+          </tr>
+          <tr>
+            <td>Thursday (3 days later)</td>
+            <td>Full self-test again. Only study what's still shaky.</td>
+            <td>~10 min</td>
+          </tr>
+          <tr>
+            <td>Friday (quiz day)</td>
+            <td>Quick 5-minute scan of the hard ones. You're ready.</td>
+            <td>~5 min</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="step-box" style="margin-top: 0.75rem;">
+        <div class="step-label">Compare to the cramming approach</div>
+        <p>Most students study nothing until Thursday night, spend 3 hours going over everything, sleep badly, and forget 60% within a week. The spaced approach uses <em>less total time</em> and produces better results.</p>
+      </div>
+    </div>
+
+    <h3>The Feynman Technique</h3>
+    <p>Named after physicist Richard Feynman, this technique forces deep understanding:</p>
+    <ol>
+      <li>Choose a concept.</li>
+      <li>Explain it out loud as if teaching a 12-year-old who has never heard of it.</li>
+      <li>Notice where you get stuck or use vague language. That's what you don't actually understand.</li>
+      <li>Go back to the source, re-learn those parts, then try again.</li>
+    </ol>
+    <p>If you can't explain it simply, you don't understand it yet. This is not a criticism &mdash; it's a diagnostic tool.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     PRACTICE TAB
+═══════════════════════════════════════════════ -->
+<section class="tab-panel" id="panel-practice" role="tabpanel" aria-labelledby="btn-practice">
   <div class="card">
     <h2>Interactive Practice</h2>
     <p>Learning note-taking is like learning to drive: reading about it helps, but you need to actually practice. These exercises let you try each technique with guided feedback.</p>
@@ -241,79 +766,278 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 
   <div class="card">
     <h2>Cornell Notes Practice</h2>
-    <p>Practice creating Cornell Notes with a sample lecture transcript.</p>
-    
+    <p>Read a sample lecture below, then try to build Cornell-style notes. A completed example is available once you've tried.</p>
+
     <div style="margin: 1rem 0;">
-      <button class="quiz-btn" onclick="startCornellPractice()">Start Cornell Practice</button>
-      <button class="quiz-btn" onclick="showCornellSample()" style="background: var(--text-muted);">Show Sample</button>
+      <button class="quiz-btn" onclick="startCornellPractice()">Show Lecture</button>
+      <button class="quiz-btn" onclick="showCornellSample()" style="background: var(--text-muted);">Show Completed Example</button>
       <button class="quiz-btn" onclick="resetCornellPractice()" style="background: var(--accent);">Reset</button>
     </div>
 
     <div id="cornell-instructions" style="background: var(--accent-light); padding: 1rem; border-radius: var(--radius); margin: 1rem 0; display: none;">
-      <strong>Instructions:</strong> Read the lecture content and take notes using Cornell format.
+      <strong>Instructions:</strong> Read the lecture content. On paper or in a document, create three sections: a cue column (left), a notes column (right), and a summary at the bottom. Take notes, then click "Show Completed Example" to compare.
     </div>
 
     <div id="cornell-lecture" style="display: none; background: var(--warm); padding: 1.5rem; border-radius: var(--radius); margin: 1rem 0;">
-      <h4>Sample Lecture: Photosynthesis Overview</h4>
+      <h4 style="margin-bottom: 1rem; color: var(--theme-dark);">Sample Lecture: Photosynthesis Overview</h4>
       <p><strong>Today we're covering photosynthesis, one of the most important biological processes on Earth.</strong></p>
       <p>Photosynthesis occurs in two main stages. The first stage is the light-dependent reactions, also called the photo reactions. These happen in the thylakoid membranes of chloroplasts. Here, light energy is captured by chlorophyll and converted into chemical energy in the form of ATP and NADPH. Oxygen is released as a byproduct.</p>
-      <p>The second stage is the Calvin cycle or dark reactions in the stroma. The ATP and NADPH from stage one are used to fix carbon dioxide into glucose.</p>
-      <p><strong>The overall equation: 6CO₂ + 6H₂O + light energy <span aria-hidden="true">→</span> C₆H₁₂O₆ + 6O₂</strong></p>
+      <p>The second stage is the Calvin cycle, also called the dark reactions or light-independent reactions, and it occurs in the stroma of the chloroplast. The ATP and NADPH from stage one are used to fix carbon dioxide into glucose through a series of enzyme-driven reactions.</p>
+      <p><strong>The overall equation: 6CO&#8322; + 6H&#8322;O + light energy &#8594; C&#8326;H&#8321;&#8322;O&#8326; + 6O&#8322;</strong></p>
     </div>
 
     <div id="cornell-sample" style="display: none; margin: 1rem 0;">
-      <h4>Sample Cornell Notes</h4>
-      <p><strong>This shows effective Cornell note structure</strong></p>
+      <h4 style="margin-bottom: 1rem; color: var(--theme-dark);">Completed Cornell Notes Example</h4>
+      <div class="cornell-grid" role="table" aria-label="Completed Cornell notes example for photosynthesis">
+        <div class="cornell-topic" role="rowgroup">Topic: Photosynthesis Overview</div>
+        <div class="cornell-cue" role="rowgroup">
+          <h4>Cue Column</h4>
+          <p style="margin-top: 0.8rem;"><strong>Where does each stage occur?</strong></p>
+          <p style="margin-top: 0.6rem;"><strong>What are the outputs of Stage 1?</strong></p>
+          <p style="margin-top: 0.6rem;"><strong>What does Stage 2 produce and what does it need?</strong></p>
+          <p style="margin-top: 0.6rem;"><strong>Write the overall equation from memory.</strong></p>
+        </div>
+        <div class="cornell-notes" role="rowgroup">
+          <h4>Notes Column</h4>
+          <ul style="margin-top: 0.8rem; padding-left: 1.2rem;">
+            <li><strong>Stage 1:</strong> Light-dependent reactions &#8594; thylakoid membranes</li>
+            <li>Chlorophyll captures light &#8594; makes ATP + NADPH</li>
+            <li>Byproduct: O&#8322; (oxygen) released</li>
+            <li><strong>Stage 2:</strong> Calvin cycle &#8594; stroma</li>
+            <li>Uses ATP + NADPH from Stage 1 &#8594; fixes CO&#8322; &#8594; glucose</li>
+            <li>Overall: 6CO&#8322; + 6H&#8322;O + light &#8594; glucose + 6O&#8322;</li>
+          </ul>
+        </div>
+        <div class="cornell-summary" role="rowgroup">
+          <h4>Summary</h4>
+          <p>Photosynthesis has two stages. The light-dependent reactions occur in the thylakoids and convert light into ATP and NADPH. The Calvin cycle in the stroma uses those energy carriers to build glucose from CO&#8322;. The overall equation shows 6 CO&#8322; and 6 H&#8322;O converting to glucose and oxygen.</p>
+        </div>
+      </div>
     </div>
   </div>
 
   <div class="card">
     <h2>Active Recall Practice</h2>
-    <p>Practice the "brain dump" technique - read content, then write what you remember without looking.</p>
-    
+    <p>Read the material, then close it and write what you remember. This is called a "brain dump" and it's one of the most effective study techniques known. What you can't recall &mdash; that's exactly what you need to study more.</p>
+
     <div style="margin: 1rem 0;">
-      <button class="quiz-btn" onclick="startRecallPractice()">Start Recall Practice</button>
+      <button class="quiz-btn" onclick="startRecallPractice()">Show Study Material</button>
       <button class="quiz-btn" onclick="resetRecallPractice()" style="background: var(--accent);">Reset</button>
     </div>
 
     <div id="recall-content" style="display: none; background: var(--warm); padding: 1.5rem; border-radius: var(--radius);">
-      <h4>Study Material: Cell Membrane Transport</h4>
-      <p>Cell membranes control what enters and leaves cells through passive transport (no energy) and active transport (requires energy). Passive includes diffusion, facilitated diffusion, and osmosis. Active transport uses ATP to move substances against gradients.</p>
+      <h4 style="margin-bottom: 0.75rem; color: var(--theme-dark);">Study Material: Cell Membrane Transport</h4>
+      <p>Cell membranes control what enters and leaves cells. There are two main types of transport. <strong>Passive transport</strong> does not require energy (ATP). It includes simple diffusion (molecules move from high to low concentration), facilitated diffusion (molecules use protein channels to cross), and osmosis (water moves across a membrane from low solute to high solute concentration). <strong>Active transport</strong> requires ATP and moves substances against their concentration gradient &mdash; from low to high concentration. Pumps like the sodium-potassium pump are examples of active transport.</p>
+      <p style="margin-top: 0.8rem; color: var(--theme-dark); font-weight: 600;">Read this carefully, then scroll down and write everything you remember WITHOUT looking back.</p>
     </div>
 
     <div id="recall-response-area" style="display: none; margin: 1rem 0;">
-      <textarea id="recall-response" placeholder="Write everything you remember..." style="width: 100%; height: 150px; padding: 1rem; border: 2px solid var(--border); border-radius: var(--radius);"></textarea>
-      <button class="quiz-btn" onclick="checkRecallPractice()" style="margin-top: 1rem;">Check Your Recall</button>
+      <label for="recall-response" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Write everything you remember about cell membrane transport:</label>
+      <textarea id="recall-response" placeholder="Write everything you remember... don't look back at the material!" style="width: 100%; height: 150px; padding: 1rem; border: 2px solid var(--border); border-radius: var(--radius); font-family: var(--sans); font-size: 0.95rem; resize: vertical;"></textarea>
+      <button class="quiz-btn" onclick="checkRecallPractice()" style="margin-top: 1rem;">Check My Recall</button>
     </div>
 
-    <div id="recall-feedback" style="display: none; background: var(--accent-light); padding: 1.5rem; border-radius: var(--radius); margin: 1rem 0;">
+    <div id="recall-feedback" role="alert" style="display: none; background: var(--accent-light); padding: 1.5rem; border-radius: var(--radius); margin: 1rem 0;">
       <div id="recall-feedback-content"></div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- SQ3R Tab -->
-<div class="tab-panel" id="panel-sq3r" role="tabpanel" aria-labelledby="btn-sq3r">
+<!-- ═══════════════════════════════════════════════
+     SQ3R TAB
+═══════════════════════════════════════════════ -->
+<section class="tab-panel" id="panel-sq3r" role="tabpanel" aria-labelledby="btn-sq3r">
   <div class="card">
-    <h2>SQ3R Method Simulation</h2>
-    <p>Practice the complete SQ3R process: Survey, Question, Read, Recite, Review. You'll work through each step with a real textbook section.</p>
-    
-    <div style="margin: 1rem 0;">
-      <button class="quiz-btn" onclick="startSQ3R()">Start SQ3R Practice</button>
+    <h2>SQ3R Method</h2>
+    <p>SQ3R is one of the most well-researched active reading strategies. It stands for Survey, Question, Read, Recite, Review. It transforms reading from a passive activity into an active learning process.</p>
+
+    <div class="sq3r-step">
+      <div class="sq3r-step-header">
+        <span class="sq3r-letter">S</span> Survey
+      </div>
+      <div class="sq3r-step-body">
+        <p>Before reading a word, spend 2&ndash;3 minutes previewing: read the title, headings, subheadings, figure captions, and the final summary or conclusion. Your goal is to build a mental map of what the section covers.</p>
+        <p style="margin-top: 0.5rem;"><em>Think of it as looking at the finished puzzle picture on the box before you start assembling the pieces.</em></p>
+      </div>
+    </div>
+
+    <div class="sq3r-step">
+      <div class="sq3r-step-header">
+        <span class="sq3r-letter">Q</span> Question
+      </div>
+      <div class="sq3r-step-body">
+        <p>Turn each heading into a question before you read that section. Write the questions in your notes or in the margin. Now you have a purpose for reading: you're looking for answers.</p>
+        <p style="margin-top: 0.5rem;"><em>"Mitochondria and Energy Production" becomes "How do mitochondria produce energy? What process is involved?"</em></p>
+      </div>
+    </div>
+
+    <div class="sq3r-step">
+      <div class="sq3r-step-header">
+        <span class="sq3r-letter">R</span> Read
+      </div>
+      <div class="sq3r-step-body">
+        <p>Now read the section actively, looking for answers to your questions. Read at a pace that allows comprehension, not maximum speed. Annotate as you go.</p>
+      </div>
+    </div>
+
+    <div class="sq3r-step">
+      <div class="sq3r-step-header">
+        <span class="sq3r-letter">R</span> Recite
+      </div>
+      <div class="sq3r-step-body">
+        <p>After reading each section, look away and answer your question out loud or in writing. Don't look at the book. This is the most important step &mdash; it is where actual learning happens. If you can't answer, reread that section.</p>
+      </div>
+    </div>
+
+    <div class="sq3r-step">
+      <div class="sq3r-step-header">
+        <span class="sq3r-letter">R</span> Review
+      </div>
+      <div class="sq3r-step-body">
+        <p>After finishing the entire reading, go back through your questions and try to answer all of them from memory. Check against the text. Note what you missed. Those gaps are your study priorities.</p>
+      </div>
+    </div>
+
+    <div class="worked-example" style="margin-top: 1.5rem;">
+      <h4>SQ3R Applied: Full Walkthrough</h4>
+      <p><strong>Textbook section:</strong> "The Role of Insulin in Blood Sugar Regulation"</p>
+      <div class="step-box">
+        <div class="step-label">S &mdash; Survey</div>
+        <p>You scan the heading, a diagram of the pancreas, and a summary box. You see the terms insulin, glucose, pancreas, and feedback loop. You know generally what this section will cover.</p>
+      </div>
+      <div class="step-box">
+        <div class="step-label">Q &mdash; Question</div>
+        <p>You write: "What is insulin? Where is it made? How does it regulate blood sugar? What is a feedback loop in this context?"</p>
+      </div>
+      <div class="step-box">
+        <div class="step-label">R &mdash; Read</div>
+        <p>You read the section. You circle "beta cells" and "glucagon." You annotate the diagram with arrows showing the feedback loop.</p>
+      </div>
+      <div class="step-box">
+        <div class="step-label">R &mdash; Recite</div>
+        <p>You close the book. You say: "Insulin is a hormone made in the beta cells of the pancreas. When blood glucose rises, insulin is released. It tells cells to take in glucose, lowering blood sugar back to normal. That's a negative feedback loop." You forgot what glucagon does &mdash; noted.</p>
+      </div>
+      <div class="step-box">
+        <div class="step-label">R &mdash; Review</div>
+        <p>You check your answers. You missed glucagon (it does the opposite &mdash; raises blood sugar). You add that to your notes and flag it for extra study.</p>
+      </div>
+    </div>
+
+    <div style="margin: 1.5rem 0 0.5rem;">
+      <button class="quiz-btn" onclick="startSQ3R()">Try SQ3R with a Practice Passage</button>
       <button class="quiz-btn" onclick="resetSQ3R()" style="background: var(--accent);">Reset</button>
     </div>
-    
-    <div id="sq3r-content" style="display: none;">
-      <div style="background: var(--theme-light); padding: 1.5rem; border-radius: var(--radius);">
-        <h4>SQ3R Practice Complete!</h4>
-        <p>You've experienced each step of active reading. Notice how the Recite step revealed what you actually learned vs. what felt familiar.</p>
+
+    <div id="sq3r-content" style="display: none; margin-top: 1rem;">
+      <div style="background: var(--warm); padding: 1.5rem; border-radius: var(--radius); margin-bottom: 1rem;">
+        <h4 style="color: var(--theme-dark); margin-bottom: 0.75rem;">Practice Passage: Types of Chemical Bonds</h4>
+        <p><strong>Ionic Bonds.</strong> Ionic bonds form when one atom transfers electrons to another. The atom that loses electrons becomes positively charged; the one that gains electrons becomes negatively charged. Opposite charges attract, holding the atoms together. Table salt (NaCl) is a classic example: sodium gives an electron to chlorine.</p>
+        <p style="margin-top: 0.75rem;"><strong>Covalent Bonds.</strong> Covalent bonds form when two atoms share electrons rather than transferring them. This sharing creates a stable molecule. Water (H&#8322;O) involves covalent bonds between oxygen and hydrogen atoms.</p>
+        <p style="margin-top: 0.75rem;"><strong>Hydrogen Bonds.</strong> Hydrogen bonds are weaker than ionic or covalent bonds but play a crucial role in biology. They form between molecules when a hydrogen atom is attracted to a highly electronegative atom (like oxygen or nitrogen) on a nearby molecule. Hydrogen bonds give water its unique properties.</p>
+      </div>
+
+      <div style="background: #f9f9f9; border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem;">
+        <h4 style="color: var(--theme-dark); margin-bottom: 1rem;">Your SQ3R Worksheet</h4>
+
+        <label for="sq3r-survey" style="font-weight: 700; display: block; margin-bottom: 0.3rem;">S &mdash; Survey: What clues did you notice before reading?</label>
+        <textarea id="sq3r-survey" placeholder="Headings, bold terms, structure you noticed..." style="width: 100%; height: 80px; padding: 0.75rem; border: 2px solid var(--border); border-radius: 8px; font-family: var(--sans); font-size: 0.93rem; margin-bottom: 1rem; resize: vertical;"></textarea>
+
+        <label for="sq3r-question" style="font-weight: 700; display: block; margin-bottom: 0.3rem;">Q &mdash; Question: What questions did you generate from the headings?</label>
+        <textarea id="sq3r-question" placeholder="Write your questions here..." style="width: 100%; height: 80px; padding: 0.75rem; border: 2px solid var(--border); border-radius: 8px; font-family: var(--sans); font-size: 0.93rem; margin-bottom: 1rem; resize: vertical;"></textarea>
+
+        <label for="sq3r-recite" style="font-weight: 700; display: block; margin-bottom: 0.3rem;">R &mdash; Recite: Write what you remember WITHOUT looking:</label>
+        <textarea id="sq3r-recite" placeholder="What are the three bond types? How does each work? Write from memory..." style="width: 100%; height: 100px; padding: 0.75rem; border: 2px solid var(--border); border-radius: 8px; font-family: var(--sans); font-size: 0.93rem; margin-bottom: 1rem; resize: vertical;"></textarea>
+
+        <button class="quiz-btn" onclick="checkSQ3R()">Check My Recite Step</button>
+        <div id="sq3r-feedback" role="alert" style="display: none; margin-top: 1rem; padding: 1rem; background: var(--theme-light); border-radius: 8px; border: 1px solid var(--theme);"></div>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- Study Tools Tab -->
-<div class="tab-panel" id="panel-tools" role="tabpanel" aria-labelledby="btn-tools">
+<!-- ═══════════════════════════════════════════════
+     FLASHCARDS TAB
+═══════════════════════════════════════════════ -->
+<section class="tab-panel" id="panel-flashcards" role="tabpanel" aria-labelledby="btn-flashcards">
+  <div class="card">
+    <h2>Flashcards: Study Skills Vocabulary</h2>
+    <p>Use these flashcards to learn the key terms and concepts from this guide. Click a card to flip it. Use the buttons to move through the deck.</p>
+    <p style="font-size: 0.88rem; color: var(--text-muted);">Tip: After flipping, rate yourself honestly. If you weren't sure, that's the card to revisit.</p>
+
+    <div style="margin: 1rem 0;" id="fc-progress-wrap">
+      <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem;">
+        <span>Card <span id="fc-current">1</span> of <span id="fc-total">1</span></span>
+        <span id="fc-score-label">Score: <span id="fc-score">0</span> correct</span>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="fc-progress" style="width: 0%"></div></div>
+    </div>
+
+    <div class="flashcard-container">
+      <div class="flashcard" id="flashcard" role="button" tabindex="0" aria-label="Flashcard: click or press Enter to flip" onclick="flipCard()" onkeydown="if(event.key==='Enter'||event.key===' '){flipCard(); event.preventDefault();}">
+        <div class="flashcard-front" id="fc-front">Loading...</div>
+        <div class="flashcard-back" id="fc-back">Loading...</div>
+      </div>
+    </div>
+    <p class="flashcard-hint" aria-live="polite" id="fc-hint">Click the card or press Enter to flip it</p>
+
+    <div class="flashcard-nav" role="group" aria-label="Flashcard navigation">
+      <button class="quiz-btn" onclick="prevCard()" style="background: var(--text-muted);">&#8592; Previous</button>
+      <button class="quiz-btn" onclick="markCorrect()" style="background: #28a745;">&#10003; Got it</button>
+      <button class="quiz-btn" onclick="markIncorrect()" style="background: #dc3545;">&#10007; Miss</button>
+      <button class="quiz-btn" onclick="nextCard()">Next &#8594;</button>
+      <button class="quiz-btn" onclick="shuffleCards()" style="background: var(--accent);">Shuffle</button>
+      <button class="quiz-btn" onclick="resetFlashcards()" style="background: var(--text-muted);">Reset</button>
+    </div>
+
+    <div id="fc-complete" class="score-display" role="status" aria-live="polite">
+      <div class="score-number" id="fc-final-score">--</div>
+      <p>cards marked correct out of <span id="fc-final-total"></span></p>
+      <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem;">Review the ones you missed, then shuffle and try again.</p>
+      <button class="quiz-btn" onclick="resetFlashcards()" style="margin-top: 1rem;">Start Over</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     QUIZ TAB
+═══════════════════════════════════════════════ -->
+<section class="tab-panel" id="panel-quiz" role="tabpanel" aria-labelledby="btn-quiz">
+  <div class="card">
+    <h2>Knowledge Check Quiz</h2>
+    <p>Test your understanding of note-taking and active reading strategies. Read each question carefully. After each answer, you'll get feedback explaining why it's correct or incorrect.</p>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+      <div>Question <span id="q-current">1</span> of <span id="q-total">10</span></div>
+      <div role="status" aria-live="polite">Score: <span id="q-score">0</span> / <span id="q-answered">0</span></div>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="q-progress" style="width: 0%"></div></div>
+
+    <div id="quiz-question-wrap">
+      <div id="q-question" style="font-size: 1.08rem; font-weight: 600; margin-bottom: 1.2rem; line-height: 1.55;"></div>
+      <fieldset id="q-options-fieldset" style="border: none; padding: 0; margin: 0;">
+        <legend class="sr-only" id="q-legend">Choose your answer</legend>
+        <div id="q-options"></div>
+      </fieldset>
+      <div id="q-feedback" role="alert" class="quiz-feedback"></div>
+      <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <button class="quiz-btn" id="q-next-btn" onclick="nextQuestion()" style="display:none;">Next Question &#8594;</button>
+        <button class="quiz-btn" onclick="resetQuiz()" style="background: var(--accent);">Restart Quiz</button>
+      </div>
+    </div>
+
+    <div id="quiz-complete" class="score-display" role="status" aria-live="polite">
+      <div class="score-number" id="q-final-score">--</div>
+      <p>out of <span id="q-final-total"></span> questions correct</p>
+      <div id="q-final-message" style="margin-top: 1rem; color: var(--text-muted);"></div>
+      <button class="quiz-btn" onclick="resetQuiz()" style="margin-top: 1.5rem;">Take Quiz Again</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     STUDY TOOLS TAB
+═══════════════════════════════════════════════ -->
+<section class="tab-panel" id="panel-tools" role="tabpanel" aria-labelledby="btn-tools">
   <div class="card">
     <h2>Interactive Study Tools</h2>
     <p>Practical tools to implement the techniques you've learned.</p>
@@ -321,109 +1045,545 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 
   <div class="card">
     <h2>Pomodoro Timer</h2>
-    <p>25 minutes of focused work, then a 5-minute break.</p>
-    
+    <p>25 minutes of focused work, then a 5-minute break. Research suggests this interval matches natural attention spans. During your focus session: no phone, no social media. One task only.</p>
+
     <div style="text-align: center; padding: 2rem;">
-      <div id="pomodoro-display" style="font-family: var(--mono); font-size: 3rem; font-weight: bold; color: var(--theme); margin-bottom: 1rem;">25:00</div>
-      <div id="pomodoro-phase" style="font-size: 1.2rem; color: var(--text-muted); margin-bottom: 1.5rem;">Ready to start</div>
-      
+      <div id="pomodoro-display" style="font-family: var(--mono); font-size: 3rem; font-weight: bold; color: var(--theme); margin-bottom: 1rem;" aria-live="off" aria-label="Timer display">25:00</div>
+      <div id="pomodoro-phase" style="font-size: 1.2rem; color: var(--text-muted); margin-bottom: 1.5rem;" role="status" aria-live="polite">Ready to start</div>
+
       <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
         <button class="quiz-btn" onclick="startPomodoro()" id="pomodoro-start">Start Focus Session</button>
         <button class="quiz-btn" onclick="pausePomodoro()" id="pomodoro-pause" style="background: var(--text-muted); display: none;">Pause</button>
         <button class="quiz-btn" onclick="resetPomodoro()" style="background: var(--accent);">Reset</button>
       </div>
-      
-      <div id="pomodoro-stats" style="margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted);">
+
+      <div id="pomodoro-stats" style="margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted);" role="status" aria-live="polite">
         Sessions completed: <span id="pomodoro-count">0</span>
       </div>
     </div>
   </div>
-</div>
 
-</div>
+  <div class="card">
+    <h2>Study Session Planner</h2>
+    <p>Plan your study session before you start. This five-minute investment prevents the 20 minutes of "getting around to it" that most students waste.</p>
+
+    <div style="background: var(--warm); padding: 1.5rem; border-radius: var(--radius);">
+      <label for="planner-subject" style="font-weight: 700; display: block; margin-bottom: 0.3rem;">What subject/topic are you studying today?</label>
+      <input type="text" id="planner-subject" placeholder="e.g. Cell Biology Chapter 4" style="width: 100%; padding: 0.75rem; border: 2px solid var(--border); border-radius: 8px; font-family: var(--sans); font-size: 0.95rem; margin-bottom: 1rem;">
+
+      <label for="planner-goal" style="font-weight: 700; display: block; margin-bottom: 0.3rem;">What is your specific goal for this session?</label>
+      <input type="text" id="planner-goal" placeholder="e.g. Be able to explain the stages of photosynthesis from memory" style="width: 100%; padding: 0.75rem; border: 2px solid var(--border); border-radius: 8px; font-family: var(--sans); font-size: 0.95rem; margin-bottom: 1rem;">
+
+      <label for="planner-method" style="font-weight: 700; display: block; margin-bottom: 0.3rem;">Which strategy will you use?</label>
+      <select id="planner-method" style="width: 100%; padding: 0.75rem; border: 2px solid var(--border); border-radius: 8px; font-family: var(--sans); font-size: 0.95rem; margin-bottom: 1rem; background: white;">
+        <option value="">-- Choose a strategy --</option>
+        <option value="cornell">Cornell Notes</option>
+        <option value="sq3r">SQ3R Active Reading</option>
+        <option value="recall">Active Recall / Brain Dump</option>
+        <option value="flashcards">Flashcard Review</option>
+        <option value="feynman">Feynman Technique (teach it out loud)</option>
+        <option value="spaced">Spaced Repetition Review</option>
+      </select>
+
+      <button class="quiz-btn" onclick="generatePlan()" style="margin-top: 0.5rem;">Generate My Study Plan</button>
+
+      <div id="planner-output" role="status" aria-live="polite" style="display: none; margin-top: 1rem; background: white; border: 2px solid var(--theme); border-radius: var(--radius); padding: 1.25rem;"></div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /container -->
 
 <div class="site-footer">
-  Foundations: Closing the Gap — Free supplemental resource. Not affiliated with any university or publisher.<br>
+  Foundations: Closing the Gap &mdash; Free supplemental resource. Not affiliated with any university or publisher.<br>
   Always verify content against your official course materials.
 </div>
 
 <script>
-// Tab Navigation
+// ─────────────────────────────────────────────────────────────
+// TAB NAVIGATION
+// ─────────────────────────────────────────────────────────────
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', function() {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-selected', 'false');
+    });
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     this.classList.add('active');
+    this.setAttribute('aria-selected', 'true');
     document.getElementById('panel-' + this.dataset.tab).classList.add('active');
     window.scrollTo({ top: document.querySelector('.tab-nav').offsetTop - 2, behavior: 'smooth' });
+    announce('Navigated to ' + this.textContent.trim());
   });
 });
 
-function toggleDisc() { 
-  const disc = document.getElementById('disc');
-  if (disc) disc.classList.toggle('open'); 
+// ─────────────────────────────────────────────────────────────
+// LIVE ANNOUNCER
+// ─────────────────────────────────────────────────────────────
+function announce(msg) {
+  const el = document.getElementById('live-announce');
+  if (el) { el.textContent = ''; setTimeout(() => { el.textContent = msg; }, 50); }
 }
 
-// Cornell Notes Practice
+// ─────────────────────────────────────────────────────────────
+// DISCLAIMER TOGGLE
+// ─────────────────────────────────────────────────────────────
+function toggleDisc() {
+  const disc = document.getElementById('disc');
+  const toggle = disc ? disc.querySelector('.disclaimer-toggle') : null;
+  if (!disc) return;
+  const isOpen = disc.classList.toggle('open');
+  if (toggle) toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+}
+
+// ─────────────────────────────────────────────────────────────
+// CORNELL NOTES PRACTICE
+// ─────────────────────────────────────────────────────────────
 function startCornellPractice() {
   document.getElementById('cornell-instructions').style.display = 'block';
   document.getElementById('cornell-lecture').style.display = 'block';
   document.getElementById('cornell-sample').style.display = 'none';
+  announce('Lecture content shown. Try taking Cornell notes, then click Show Completed Example.');
 }
-
 function showCornellSample() {
   document.getElementById('cornell-sample').style.display = 'block';
+  announce('Completed example shown. Compare with your own notes.');
 }
-
 function resetCornellPractice() {
   document.getElementById('cornell-instructions').style.display = 'none';
   document.getElementById('cornell-lecture').style.display = 'none';
   document.getElementById('cornell-sample').style.display = 'none';
 }
 
-// Active Recall Practice
+// ─────────────────────────────────────────────────────────────
+// ACTIVE RECALL PRACTICE
+// ─────────────────────────────────────────────────────────────
 function startRecallPractice() {
   document.getElementById('recall-content').style.display = 'block';
   document.getElementById('recall-response-area').style.display = 'block';
   document.getElementById('recall-feedback').style.display = 'none';
   document.getElementById('recall-response').value = '';
+  announce('Study material shown. Read it, then write what you remember.');
 }
-
 function checkRecallPractice() {
   const response = document.getElementById('recall-response').value.toLowerCase();
-  const keyTerms = ['passive transport', 'active transport', 'diffusion', 'atp', 'gradient'];
-  const foundTerms = keyTerms.filter(term => response.includes(term));
-  const percentage = Math.round((foundTerms.length / keyTerms.length) * 100);
-  
-  let feedback = `<h4>Recall Score: ${percentage}%</h4>`;
-  feedback += `<p>You remembered ${foundTerms.length} out of ${keyTerms.length} key concepts.</p>`;
-  
-  if (percentage >= 80) {
-    feedback += '<p style="color: var(--accent);">Excellent recall! You captured the main ideas.</p>';
-  } else {
-    feedback += '<p>This shows what you actually learned vs. what felt familiar. The gaps are what to study more.</p>';
-  }
-  
-  document.getElementById('recall-feedback-content').innerHTML = feedback;
-  document.getElementById('recall-feedback').style.display = 'block';
-}
+  const keyTerms = [
+    { term: 'passive transport', label: 'passive transport' },
+    { term: 'active transport', label: 'active transport' },
+    { term: 'diffusion', label: 'diffusion' },
+    { term: 'atp', label: 'ATP (energy molecule)' },
+    { term: 'gradient', label: 'concentration gradient' },
+    { term: 'osmosis', label: 'osmosis' },
+    { term: 'sodium-potassium', label: 'sodium-potassium pump' }
+  ];
+  const found = keyTerms.filter(k => response.includes(k.term));
+  const missed = keyTerms.filter(k => !response.includes(k.term));
+  const pct = Math.round((found.length / keyTerms.length) * 100);
 
+  let fb = '<h4>Recall Check: ' + pct + '%</h4>';
+  fb += '<p>You included ' + found.length + ' of ' + keyTerms.length + ' key concepts.</p>';
+  if (found.length > 0) {
+    fb += '<p><strong>You got:</strong> ' + found.map(k => k.label).join(', ') + '</p>';
+  }
+  if (missed.length > 0) {
+    fb += '<p><strong>You missed:</strong> ' + missed.map(k => k.label).join(', ') + '</p>';
+    fb += '<p style="color: var(--theme-dark); margin-top: 0.5rem;">Those gaps are your highest-priority study targets. Go back, re-read those parts, then try the brain dump again.</p>';
+  } else {
+    fb += '<p style="color: #155724; margin-top: 0.5rem;"><strong>Excellent!</strong> You captured all the main ideas. That means you learned them, not just read them.</p>';
+  }
+
+  document.getElementById('recall-feedback-content').innerHTML = fb;
+  document.getElementById('recall-feedback').style.display = 'block';
+  announce('Recall check complete. Score: ' + pct + ' percent.');
+}
 function resetRecallPractice() {
   document.getElementById('recall-content').style.display = 'none';
   document.getElementById('recall-response-area').style.display = 'none';
   document.getElementById('recall-feedback').style.display = 'none';
 }
 
-// SQ3R Simulation
+// ─────────────────────────────────────────────────────────────
+// SQ3R
+// ─────────────────────────────────────────────────────────────
 function startSQ3R() {
   document.getElementById('sq3r-content').style.display = 'block';
+  announce('SQ3R practice passage shown. Complete each step in the worksheet.');
 }
-
 function resetSQ3R() {
   document.getElementById('sq3r-content').style.display = 'none';
+  document.getElementById('sq3r-feedback').style.display = 'none';
+  document.getElementById('sq3r-feedback').innerHTML = '';
+  ['sq3r-survey', 'sq3r-question', 'sq3r-recite'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+}
+function checkSQ3R() {
+  const recite = document.getElementById('sq3r-recite').value.toLowerCase();
+  const checks = [
+    { term: 'ionic', label: 'ionic bonds' },
+    { term: 'covalent', label: 'covalent bonds' },
+    { term: 'hydrogen', label: 'hydrogen bonds' },
+    { term: 'electron', label: 'electrons (transfer/sharing)' },
+    { term: 'water', label: 'water as an example' }
+  ];
+  const found = checks.filter(c => recite.includes(c.term));
+  const missed = checks.filter(c => !recite.includes(c.term));
+  const pct = Math.round((found.length / checks.length) * 100);
+
+  let msg = '<strong>Recite Step Score: ' + pct + '%</strong><br>';
+  if (found.length > 0) msg += 'Captured: ' + found.map(c => c.label).join(', ') + '<br>';
+  if (missed.length > 0) msg += 'Missed: ' + missed.map(c => c.label).join(', ') + '<br>';
+  msg += '<br>Now go back and review what you missed. That\'s the R in Review.';
+
+  const fb = document.getElementById('sq3r-feedback');
+  fb.innerHTML = msg;
+  fb.style.display = 'block';
+  announce('SQ3R recite check: ' + pct + ' percent. ' + (missed.length > 0 ? 'Review: ' + missed.map(c => c.label).join(', ') : 'All key concepts captured.'));
 }
 
-// Pomodoro Timer
+// ─────────────────────────────────────────────────────────────
+// FLASHCARDS
+// ─────────────────────────────────────────────────────────────
+const flashcards = [
+  { q: "Active Reading", a: "Engaging with text by questioning, annotating, and recalling — rather than just reading words passively." },
+  { q: "Cornell Notes", a: "A note-taking system with three sections: a narrow cue column (left), a wide notes column (right), and a summary at the bottom." },
+  { q: "Cue Column", a: "The narrow left column in Cornell notes. Written AFTER class. Contains questions or keywords that prompt recall of the notes column." },
+  { q: "Retrieval Practice", a: "Testing yourself on material without looking at notes. Proven to strengthen long-term memory more than re-reading." },
+  { q: "Spaced Repetition", a: "Reviewing material at increasing intervals over time. More effective than cramming because it fights the forgetting curve." },
+  { q: "SQ3R", a: "Survey, Question, Read, Recite, Review. A five-step active reading method that builds comprehension and retention." },
+  { q: "The Forgetting Curve", a: "The pattern showing rapid memory loss shortly after learning, which spaced review can counteract." },
+  { q: "Feynman Technique", a: "Explaining a concept out loud in simple language to identify what you actually understand vs. what just feels familiar." },
+  { q: "Passive Reading", a: "Moving your eyes over text without active mental engagement. Common. Produces little retention." },
+  { q: "Annotation", a: "Marking up text with symbols, questions, and notes in your own words to make reading active." },
+  { q: "Brain Dump", a: "Writing everything you remember about a topic immediately after studying it, without looking at notes." },
+  { q: "The 24-Hour Rule", a: "Reviewing and reorganizing lecture notes within 24 hours of class, when memory consolidation is strongest." },
+  { q: "Selective Highlighting", a: "Only marking the most important ideas in a text — not whole paragraphs. Forces decision-making about what matters." },
+  { q: "Mind Map", a: "A visual note-taking approach where a central idea branches into related concepts. Good for showing relationships." },
+  { q: "Recite Step (SQ3R)", a: "After reading a section, looking away and answering your question from memory. The most important step in SQ3R." }
+];
+
+let fcIndex = 0;
+let fcOrder = [...Array(flashcards.length).keys()];
+let fcFlipped = false;
+let fcCorrect = 0;
+let fcAnswered = new Set();
+
+function initFlashcards() {
+  fcIndex = 0;
+  fcOrder = [...Array(flashcards.length).keys()];
+  fcFlipped = false;
+  fcCorrect = 0;
+  fcAnswered = new Set();
+  document.getElementById('fc-complete').style.display = 'none';
+  document.getElementById('fc-progress-wrap').style.display = 'block';
+  document.getElementById('flashcard').style.display = '';
+  document.getElementById('fc-hint').style.display = '';
+  updateFlashcard();
+}
+
+function updateFlashcard() {
+  const card = flashcards[fcOrder[fcIndex]];
+  const el = document.getElementById('flashcard');
+  document.getElementById('fc-front').textContent = card.q;
+  document.getElementById('fc-back').textContent = card.a;
+  fcFlipped = false;
+  el.classList.remove('flipped');
+  el.setAttribute('aria-label', 'Flashcard: ' + card.q + '. Press Enter to flip for answer.');
+  document.getElementById('fc-hint').textContent = 'Click the card or press Enter to flip it';
+  document.getElementById('fc-current').textContent = fcIndex + 1;
+  document.getElementById('fc-total').textContent = flashcards.length;
+  document.getElementById('fc-progress').style.width = Math.round(((fcIndex) / flashcards.length) * 100) + '%';
+  document.getElementById('fc-score').textContent = fcCorrect;
+}
+
+function flipCard() {
+  const el = document.getElementById('flashcard');
+  const card = flashcards[fcOrder[fcIndex]];
+  fcFlipped = !fcFlipped;
+  el.classList.toggle('flipped', fcFlipped);
+  if (fcFlipped) {
+    el.setAttribute('aria-label', 'Answer: ' + card.a + '. Press Enter to flip back.');
+    document.getElementById('fc-hint').textContent = 'Did you know it? Mark Got It or Miss, then go to next card.';
+    announce('Answer: ' + card.a);
+  } else {
+    el.setAttribute('aria-label', 'Flashcard: ' + card.q + '. Press Enter to flip for answer.');
+    document.getElementById('fc-hint').textContent = 'Click the card or press Enter to flip it';
+  }
+}
+
+function nextCard() {
+  if (fcIndex < flashcards.length - 1) {
+    fcIndex++;
+    updateFlashcard();
+  } else {
+    showFlashcardComplete();
+  }
+}
+
+function prevCard() {
+  if (fcIndex > 0) { fcIndex--; updateFlashcard(); }
+}
+
+function markCorrect() {
+  if (!fcAnswered.has(fcIndex)) { fcCorrect++; fcAnswered.add(fcIndex); }
+  announce('Marked correct. Score: ' + fcCorrect + '.');
+  nextCard();
+}
+
+function markIncorrect() {
+  fcAnswered.add(fcIndex);
+  announce('Marked miss. Keep reviewing this one.');
+  nextCard();
+}
+
+function shuffleCards() {
+  for (let i = fcOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [fcOrder[i], fcOrder[j]] = [fcOrder[j], fcOrder[i]];
+  }
+  fcIndex = 0; fcFlipped = false; fcCorrect = 0; fcAnswered = new Set();
+  document.getElementById('fc-complete').style.display = 'none';
+  document.getElementById('fc-progress-wrap').style.display = 'block';
+  document.getElementById('flashcard').style.display = '';
+  document.getElementById('fc-hint').style.display = '';
+  updateFlashcard();
+  announce('Cards shuffled. Starting from the beginning.');
+}
+
+function showFlashcardComplete() {
+  document.getElementById('fc-complete').style.display = 'block';
+  document.getElementById('fc-progress-wrap').style.display = 'none';
+  document.getElementById('flashcard').style.display = 'none';
+  document.getElementById('fc-hint').style.display = 'none';
+  document.getElementById('fc-final-score').textContent = fcCorrect;
+  document.getElementById('fc-final-total').textContent = flashcards.length;
+  announce('Flashcard deck complete. Score: ' + fcCorrect + ' of ' + flashcards.length + '.');
+}
+
+function resetFlashcards() { initFlashcards(); announce('Flashcards reset.'); }
+
+// ─────────────────────────────────────────────────────────────
+// QUIZ
+// ─────────────────────────────────────────────────────────────
+const quizData = [
+  {
+    q: "Which of the following is the BEST description of active reading?",
+    options: [
+      "Reading quickly to cover the most pages in the least time",
+      "Engaging with text by questioning, annotating, and recalling as you read",
+      "Highlighting the most important sentences in each paragraph",
+      "Re-reading a chapter multiple times until it feels familiar"
+    ],
+    correct: 1,
+    explanation: "Active reading means your brain is working with the information, not just processing it passively. Questioning, annotating, and recalling are the core behaviors. Highlighting and re-reading feel productive but produce far less retention."
+  },
+  {
+    q: "In the Cornell note-taking system, what is the PURPOSE of the cue column?",
+    options: [
+      "To write the professor's exact words during class",
+      "To provide a space for drawing diagrams and figures",
+      "To write questions or keywords AFTER class that prompt self-testing",
+      "To summarize the entire lecture in two or three sentences"
+    ],
+    correct: 2,
+    explanation: "The cue column is written after class. You turn your notes into questions or keywords you can use to test yourself by covering the notes column. The summary section (bottom) is for the brief written summary."
+  },
+  {
+    q: "What does research show about retrieval practice compared to re-reading?",
+    options: [
+      "Re-reading produces better long-term retention",
+      "Both are equally effective when done carefully",
+      "Retrieval practice (self-testing) produces stronger long-term memory",
+      "Re-reading is better for initial learning; retrieval is better for finals"
+    ],
+    correct: 2,
+    explanation: "Decades of research consistently show that retrieval practice \u2014 actively trying to remember information without looking \u2014 produces much stronger long-term retention than re-reading. This is called the 'testing effect.'"
+  },
+  {
+    q: "A student reads a textbook chapter and highlights almost every sentence. What is the most likely outcome?",
+    options: [
+      "They will remember more because highlighting forces attention",
+      "The highlighting will make review faster and more efficient",
+      "They will feel productive but retain little, because no active processing occurred",
+      "This is an effective strategy as long as they re-read the highlights later"
+    ],
+    correct: 2,
+    explanation: "Highlighting creates the illusion of learning. When you highlight everything, you make no decisions about what matters. The mental work that creates memory simply does not happen. Studies show highlighting alone is one of the least effective study strategies."
+  },
+  {
+    q: "What does the 'R' in SQ3R that follows 'Read' stand for?",
+    options: [
+      "Reflect",
+      "Recite",
+      "Record",
+      "Revise"
+    ],
+    correct: 1,
+    explanation: "Recite is the most critical step in SQ3R. After reading each section, you look away and try to answer your questions from memory. This transforms reading into active learning. Without this step, SQ3R is just organized passive reading."
+  },
+  {
+    q: "Which study schedule is likely to produce the BEST long-term retention?",
+    options: [
+      "Study for 4 hours the night before the exam",
+      "Study for 1 hour each night for 4 nights before the exam",
+      "Re-read the chapter 3 times on the day before the exam",
+      "Make detailed notes once and review them briefly before the exam"
+    ],
+    correct: 1,
+    explanation: "This is spaced repetition. Spreading study sessions over time forces your brain to retrieve and re-consolidate memories repeatedly. Each retrieval strengthens the memory. Cramming produces short-term retention that fades rapidly after the exam."
+  },
+  {
+    q: "The Feynman Technique involves explaining a concept in simple language to identify what you don't understand. What does getting 'stuck' or using vague language during this technique tell you?",
+    options: [
+      "The concept is too complex for simple explanation",
+      "You need to find a better textbook",
+      "You need more study time before attempting this technique",
+      "Those are the specific parts you don't actually understand yet"
+    ],
+    correct: 3,
+    explanation: "Getting stuck is the whole point. Where you stumble \u2014 where you reach for vague words or can't continue \u2014 is exactly where your understanding has a gap. The Feynman Technique makes those gaps visible so you know precisely what to re-study."
+  },
+  {
+    q: "When should you write the SUMMARY section of Cornell notes?",
+    options: [
+      "During class, at the end of the lecture",
+      "Before class, to preview the topic",
+      "After class, after reviewing and writing the cue column",
+      "Right before the exam, to condense everything"
+    ],
+    correct: 2,
+    explanation: "The summary is written after class, after you've already processed your notes and added cue questions. Writing the summary is itself a recall exercise \u2014 you're synthesizing and restating the main ideas in your own words."
+  },
+  {
+    q: "A professor says: 'This is the most important equation you'll need to know.' What should an effective note-taker do?",
+    options: [
+      "Write the equation and continue listening normally",
+      "Flag the equation as high-priority, write it, and add context notes about what it means",
+      "Photograph the board so they don't have to write it",
+      "Write it down and immediately look it up in the textbook"
+    ],
+    correct: 1,
+    explanation: "When a professor signals importance, that's a cue. Effective note-takers flag it (with a star, 'EXAM,' or similar mark), write the content, and add enough context to understand it later. A photo of the board without any personal processing produces no learning."
+  },
+  {
+    q: "What is the PRIMARY purpose of the 'Question' step in SQ3R (turning headings into questions before reading)?",
+    options: [
+      "To reduce the amount of the text you need to read",
+      "To give your brain a specific purpose for reading, making it active rather than passive",
+      "To predict what the professor will ask on the exam",
+      "To practice writing skills before taking notes"
+    ],
+    correct: 1,
+    explanation: "When you read with a question in mind, your brain is searching for an answer. This is fundamentally different from reading aimlessly. It converts reading from a passive experience into a goal-directed activity, which dramatically improves comprehension and retention."
+  }
+];
+
+let qIndex = 0;
+let qScore = 0;
+let qAnswered = 0;
+let qLocked = false;
+
+function initQuiz() {
+  qIndex = 0; qScore = 0; qAnswered = 0; qLocked = false;
+  document.getElementById('quiz-complete').style.display = 'none';
+  document.getElementById('quiz-question-wrap').style.display = 'block';
+  document.getElementById('q-total').textContent = quizData.length;
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const qd = quizData[qIndex];
+  qLocked = false;
+  document.getElementById('q-question').textContent = qd.q;
+  document.getElementById('q-current').textContent = qIndex + 1;
+  document.getElementById('q-progress').style.width = Math.round((qIndex / quizData.length) * 100) + '%';
+  document.getElementById('q-next-btn').style.display = 'none';
+
+  const fb = document.getElementById('q-feedback');
+  fb.className = 'quiz-feedback';
+  fb.innerHTML = '';
+
+  const optDiv = document.getElementById('q-options');
+  optDiv.innerHTML = '';
+  document.getElementById('q-legend').textContent = 'Question ' + (qIndex + 1) + ': Choose your answer';
+
+  qd.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.textContent = opt;
+    btn.setAttribute('aria-label', 'Option ' + (i + 1) + ': ' + opt);
+    btn.addEventListener('click', () => selectAnswer(i, btn));
+    optDiv.appendChild(btn);
+  });
+}
+
+function selectAnswer(idx, btn) {
+  if (qLocked) return;
+  qLocked = true;
+  qAnswered++;
+  const qd = quizData[qIndex];
+  const allBtns = document.querySelectorAll('.quiz-option');
+  allBtns.forEach(b => b.disabled = true);
+
+  const fb = document.getElementById('q-feedback');
+  if (idx === qd.correct) {
+    qScore++;
+    btn.classList.add('correct');
+    fb.className = 'quiz-feedback correct show';
+    fb.innerHTML = '<strong>Correct!</strong> ' + qd.explanation;
+    announce('Correct! ' + qd.explanation);
+  } else {
+    btn.classList.add('incorrect');
+    allBtns[qd.correct].classList.add('correct');
+    fb.className = 'quiz-feedback incorrect show';
+    fb.innerHTML = '<strong>Not quite.</strong> The correct answer was: "' + qd.options[qd.correct] + '." ' + qd.explanation;
+    announce('Incorrect. The correct answer was: ' + qd.options[qd.correct] + '. ' + qd.explanation);
+  }
+
+  document.getElementById('q-score').textContent = qScore;
+  document.getElementById('q-answered').textContent = qAnswered;
+
+  if (qIndex < quizData.length - 1) {
+    document.getElementById('q-next-btn').style.display = 'inline-block';
+  } else {
+    setTimeout(showQuizComplete, 1200);
+  }
+}
+
+function nextQuestion() {
+  if (qIndex < quizData.length - 1) { qIndex++; renderQuestion(); }
+}
+
+function showQuizComplete() {
+  document.getElementById('quiz-question-wrap').style.display = 'none';
+  const comp = document.getElementById('quiz-complete');
+  comp.style.display = 'block';
+  document.getElementById('q-final-score').textContent = qScore;
+  document.getElementById('q-final-total').textContent = quizData.length;
+  document.getElementById('q-progress').style.width = '100%';
+
+  let msg = '';
+  const pct = Math.round((qScore / quizData.length) * 100);
+  if (pct === 100) {
+    msg = 'Perfect score! You have a strong grasp of these strategies. Now the challenge is applying them consistently.';
+  } else if (pct >= 80) {
+    msg = 'Strong work. Review the questions you missed, then consider retaking the quiz to confirm your understanding.';
+  } else if (pct >= 60) {
+    msg = 'You have a foundation to build on. Go back to the tabs covering the topics you missed, then try again.';
+  } else {
+    msg = 'This is exactly what this guide is here for. Work through the content tabs, try the flashcards, then retake the quiz.';
+  }
+  document.getElementById('q-final-message').textContent = msg;
+  announce('Quiz complete. Score: ' + qScore + ' out of ' + quizData.length + '. ' + msg);
+}
+
+function resetQuiz() { initQuiz(); }
+
+// ─────────────────────────────────────────────────────────────
+// POMODORO TIMER
+// ─────────────────────────────────────────────────────────────
 let pomodoroTime = 25 * 60;
 let pomodoroRunning = false;
 let pomodoroInterval;
@@ -434,30 +1594,27 @@ function startPomodoro() {
   pomodoroRunning = true;
   document.getElementById('pomodoro-start').style.display = 'none';
   document.getElementById('pomodoro-pause').style.display = 'inline-block';
-  document.getElementById('pomodoro-phase').textContent = isBreak ? 'Break Time' : 'Focus Time';
-  
+  document.getElementById('pomodoro-phase').textContent = isBreak ? 'Break Time \u2014 step away from your desk' : 'Focus Time \u2014 one task only';
+
   pomodoroInterval = setInterval(() => {
     pomodoroTime--;
     updatePomodoroDisplay();
-    
     if (pomodoroTime <= 0) {
       clearInterval(pomodoroInterval);
       pomodoroRunning = false;
-      
       if (!isBreak) {
         pomodoroCount++;
         document.getElementById('pomodoro-count').textContent = pomodoroCount;
         pomodoroTime = 5 * 60;
         isBreak = true;
-        document.getElementById('pomodoro-phase').textContent = 'Break time! 🎉';
-        alert('Focus session complete! Time for a 5-minute break.');
+        document.getElementById('pomodoro-phase').textContent = 'Break time! Step away for 5 minutes.';
+        announce('Focus session complete! Session ' + pomodoroCount + ' done. Time for a 5-minute break.');
       } else {
         pomodoroTime = 25 * 60;
         isBreak = false;
-        document.getElementById('pomodoro-phase').textContent = 'Ready for next session';
-        alert('Break over! Ready for another focus session?');
+        document.getElementById('pomodoro-phase').textContent = 'Break over \u2014 ready for another session?';
+        announce('Break over. Ready for another focus session?');
       }
-      
       document.getElementById('pomodoro-start').style.display = 'inline-block';
       document.getElementById('pomodoro-pause').style.display = 'none';
       updatePomodoroDisplay();
@@ -487,8 +1644,88 @@ function resetPomodoro() {
 function updatePomodoroDisplay() {
   const minutes = Math.floor(pomodoroTime / 60);
   const seconds = pomodoroTime % 60;
-  document.getElementById('pomodoro-display').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  document.getElementById('pomodoro-display').textContent = minutes + ':' + seconds.toString().padStart(2, '0');
 }
+
+// ─────────────────────────────────────────────────────────────
+// STUDY PLANNER
+// ─────────────────────────────────────────────────────────────
+const plannerTips = {
+  cornell: [
+    "Draw your page into three sections before class: cue column (left 1/4), notes column (right 3/4), summary at bottom.",
+    "During your session: take notes in the right column. After: write cue questions on the left.",
+    "Study by covering the notes column. Read a cue question. Answer from memory. Uncover and check.",
+    "Write your summary section last \u2014 it forces you to synthesize the whole topic."
+  ],
+  sq3r: [
+    "Start by spending 3 minutes surveying: read only headings, figures, and the conclusion.",
+    "Before reading each section, write a question based on the heading.",
+    "After each section, close the book and answer your question aloud or in writing.",
+    "At the end, review all your questions. Anything you can't answer is your study priority."
+  ],
+  recall: [
+    "Read or review your notes once, then close them completely.",
+    "Set a timer for 10 minutes. Write everything you can remember.",
+    "Compare your brain dump to the original. Circle everything you missed.",
+    "Those gaps are exactly what to study next. Repeat the process."
+  ],
+  flashcards: [
+    "Sort cards into two piles after each pass: 'know it' and 'not sure yet.'",
+    "Focus your review on the 'not sure yet' pile. Only check the 'know it' pile briefly.",
+    "Say the answer out loud before flipping. Don't just think it.",
+    "Shuffle often. Recognizing a card's position is not the same as knowing the answer."
+  ],
+  feynman: [
+    "Pick one concept. Set a 5-minute timer. Explain it out loud as if to a curious 12-year-old.",
+    "Use only simple words. No jargon allowed.",
+    "Note every point where you hesitate, go vague, or stop. Those are your knowledge gaps.",
+    "Return to your source, fill those gaps, then try again."
+  ],
+  spaced: [
+    "Start today: do a full review of everything in your notes.",
+    "Tomorrow: try to recall it all without looking. Check, then re-study what you missed.",
+    "In 2 days: focus only on what was wrong last time.",
+    "In 4 days: full self-test again. Each retrieval makes the memory stronger."
+  ]
+};
+
+function generatePlan() {
+  const subject = document.getElementById('planner-subject').value.trim();
+  const goal = document.getElementById('planner-goal').value.trim();
+  const method = document.getElementById('planner-method').value;
+
+  if (!subject || !goal || !method) {
+    announce('Please fill in all three fields before generating your plan.');
+    document.getElementById('planner-output').style.display = 'block';
+    document.getElementById('planner-output').innerHTML = '<strong>Please fill in all three fields above.</strong>';
+    return;
+  }
+
+  const tips = plannerTips[method] || [];
+  const methodLabel = document.getElementById('planner-method').options[document.getElementById('planner-method').selectedIndex].text;
+
+  let html = '<h4 style="color: var(--theme-dark); margin-bottom: 0.75rem;">Your Study Plan</h4>';
+  html += '<p><strong>Subject:</strong> ' + subject + '</p>';
+  html += '<p><strong>Goal:</strong> ' + goal + '</p>';
+  html += '<p><strong>Method:</strong> ' + methodLabel + '</p>';
+  html += '<ol style="margin: 1rem 0 0 1.5rem;">';
+  tips.forEach(tip => { html += '<li style="margin-bottom: 0.5rem;">' + tip + '</li>'; });
+  html += '</ol>';
+  html += '<p style="margin-top: 1rem; font-size: 0.88rem; color: var(--text-muted);">When you finish, ask yourself: "Could I explain this to someone who has never seen it?" If yes, you learned it.</p>';
+
+  const out = document.getElementById('planner-output');
+  out.innerHTML = html;
+  out.style.display = 'block';
+  announce('Study plan generated for ' + subject + ' using ' + methodLabel + '.');
+}
+
+// ─────────────────────────────────────────────────────────────
+// INITIALIZE ON LOAD
+// ─────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function() {
+  initFlashcards();
+  initQuiz();
+});
 </script>
 </body>
 </html>
